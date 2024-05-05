@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from "react";
-import { chevron_down, chevron_up } from "../components/Icons";
+import { Chevron_down, Chevron_up } from "../components/Icons";
 
 export function Accordion(props) {
   const [open, setOpen] = useState(false);
@@ -14,11 +14,11 @@ export function Accordion(props) {
       >
         {children[0]}
         <p class={`ml-auto px-4 duration-200 ${open ? "rotate-180" : ""}`}>
-          {chevron_down}
+          <Chevron_down />
         </p>
       </div>
       <div
-        class={`w-full translate-y-[1px] transition-all overflow-hidden ${
+        class={`w-full translate-y-[1px] transition-all ${
           open ? "outline outline-1 outline-gray-200" : "hidden"
         }`}
       >
@@ -48,7 +48,9 @@ export function AccordionTable(props) {
             {header}
           </div>
         ))}
-        <div class="ml-auto px-4 opacity-0">{chevron_up}</div>
+        <div class="ml-auto px-4 opacity-0">
+          <Chevron_down />
+        </div>
       </div>
       <div class="outline outline-1 outline-gray-200 translate-y-[1px] break-words">
         {rows.map((record) => (

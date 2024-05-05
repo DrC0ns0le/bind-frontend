@@ -28,15 +28,15 @@ function Frame(props) {
   return (
     <>
       <div>
-        <div class="h-screen flex overflow-hidden">
+        <div class="h-screen w-screen flex justify-center">
           <div
             class={`bg-gray-150 ${
-              showSidebar ? "w-[15%] min-w-24" : "w-0 min-w-0"
+              showSidebar ? "md:pl-32 w-[1%] min-w-24" : "w-0 min-w-0"
             } max-w-128 overflow-hidden sidebar-width ease-in-out duration-500`}
           >
             <Sidebar location={location} />
           </div>
-          <div class="bg-gray-150 p-12 w-full max-w-screen-xl overflow-auto">
+          <div class="bg-gray-150 p-12 w-full max-w-screen-2xl overflow-auto">
             <button
               class="pb-4 ml-2 scale-125"
               onClick={() => setShowSidebar(!showSidebar)}

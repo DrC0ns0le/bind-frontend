@@ -3,7 +3,7 @@ import Frame from "../components/Frame";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { RecordAccordionTable } from "./ZoneRecordTables";
-import { spinningCog } from "../components/Icons";
+import { SpinningCog } from "../components/Icons";
 
 function Zone() {
   const params = useParams();
@@ -58,6 +58,7 @@ function Zone() {
     }
 
     async function fetchRecords() {
+      updateLoading(1, true);
       try {
         const response = await axios.get(
           "http://10.2.1.15:8090/api/v1/zones/" + zoneId + "/records",
@@ -90,13 +91,12 @@ function Zone() {
     return (
       <Frame location="zones">
         <div class="flex items-center justify-center h-screen">
-          {spinningCog}
+          {SpinningCog()}
         </div>
       </Frame>
     );
   }
 
-  console.log(data);
   return (
     <Frame location="zones">
       <div class="overflow-visible">
@@ -107,7 +107,7 @@ function Zone() {
       </div>
       <div class="flex-wrap gap-4 mt-12 min-w-[540px]">
         {loading[1] ? (
-          <div class="flex justify-center">{spinningCog}</div>
+          <div class="flex justify-center">{SpinningCog()}</div>
         ) : (
           <>
             <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
