@@ -10,7 +10,24 @@ import {
 import axios from "axios";
 
 export function RecordAccordionTable(props) {
-  const { headers, rows, refresh, setRefresh } = props;
+  const [allRecords, setAllRecords] = useState(props.rows);
+  const { headers, refresh, setRefresh } = props;
+
+  const addNewRecord = () => {
+    setAllRecords((prevRecord) => {
+      const newRecord = {
+        uuid: "new",
+        type: "A",
+        host: "",
+        content: "",
+        staging: true,
+        ttl: 300,
+      };
+      return [newRecord, ...prevRecord];
+    });
+  };
+
+  addNewRecord();
 
   const recordsTypes = ["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"];
 
@@ -201,7 +218,9 @@ export function RecordAccordionTable(props) {
           class={
             "rounded-md bg-[#373737] px-2.5 py-1 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 place-self-end"
           }
-          onClick={setRefresh(false)}
+          onClick={() => {
+            addNewRecord();
+          }}
         >
           +
         </button>
@@ -218,7 +237,7 @@ export function RecordAccordionTable(props) {
         <div class="ml-auto px-4 opacity-0">{chevron_up}</div>
       </div>
       <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto">
-        {rows.map((record) => (
+        {allRecords.map((record) => (
           <Accordion
             additionalClass={`${
               record.staging
@@ -228,16 +247,22 @@ export function RecordAccordionTable(props) {
                 : ""
             }`}
           >
-            <AccordionTitle key={record.uuid}>
-              {Object.entries(headers).map(([header, className]) => (
-                <div
-                  key={record[header.toLowerCase]}
-                  class={`font-mono ${className}`}
-                >
-                  {record[header.toLowerCase()]}
-                </div>
-              ))}
-            </AccordionTitle>
+            {record.uuid != "new" ? (
+              <AccordionTitle key={record.uuid}>
+                {Object.entries(headers).map(([header, className]) => (
+                  <div
+                    key={record[header.toLowerCase]}
+                    class={`font-mono ${className}`}
+                  >
+                    {record[header.toLowerCase()]}
+                  </div>
+                ))}
+              </AccordionTitle>
+            ) : (
+              <AccordionTitle key={record.uuid}>
+                <p>New Record</p>
+              </AccordionTitle>
+            )}
             <AccordionContent key={record.uuid}>
               {recordForm(record)}
             </AccordionContent>

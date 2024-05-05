@@ -77,7 +77,6 @@ function Zone() {
 
     fetchZone();
     fetchRecords();
-    // setRefresh(false);
   }, [refresh]);
 
   const headers = {
