@@ -32,7 +32,14 @@ export function RecordAccordionTable(props) {
     });
     return updatedQuery;
   });
-  const { headers, refresh, setRefresh } = props;
+  const { refresh, setRefresh } = props;
+
+  const headers = {
+    Host: "w-4/12",
+    Content: "w-5/12 px-2",
+    Type: "w-1/12 px-2",
+    TTL: "w-1/12 px-2",
+  };
 
   const addNewRecord = () => {
     setAllRecords((prevRecord) => {
@@ -199,7 +206,7 @@ export function RecordAccordionTable(props) {
       }
       // wait 300ms before refresh
       await new Promise((resolve) => setTimeout(resolve, 300));
-      setRefresh(!refresh);
+      setRefresh(Math.floor(Date.now() / 1000));
       setAllRecords(props.rows);
     };
 
@@ -221,7 +228,7 @@ export function RecordAccordionTable(props) {
         console.log(error);
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      setRefresh(!refresh);
+      setRefresh(Math.floor(Date.now() / 1000));
     };
 
     return (
@@ -319,6 +326,7 @@ export function RecordAccordionTable(props) {
           class={
             "rounded-md bg-[#373737] ml-auto mx-4 px-1.5 py-1 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 justify-self-end"
           }
+          onClick={() => setRefresh(Math.floor(Date.now() / 1000))}
         >
           <RefreshIcon additionalClass="scale-75" />
         </button>
@@ -350,7 +358,9 @@ export function RecordAccordionTable(props) {
             additionalClass={`${
               record.staging
                 ? record.deleted_at == 0
-                  ? "bg-green-200"
+                  ? record.created_at == record.modified_at
+                    ? "bg-green-200"
+                    : "bg-slate-200"
                   : "bg-red-200"
                 : ""
             }`}
@@ -374,6 +384,92 @@ export function RecordAccordionTable(props) {
             <AccordionContent key={record.uuid}>
               {recordForm(record)}
             </AccordionContent>
+          </Accordion>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function SimpleRecordAccordionTable(props) {
+  const [query, setQuery] = useState(() => {
+    const updatedQuery = {};
+    props.rows.forEach((record) => {
+      updatedQuery[record.uuid] = "";
+    });
+    return updatedQuery;
+  });
+  const { refresh, setRefresh } = props;
+
+  const headers = {
+    Host: "w-4/12",
+    Content: "w-5/12 px-2",
+    Type: "w-1/12 px-2",
+    TTL: "w-1/12 px-2",
+  };
+
+  return (
+    <div class="flex flex-col">
+      <div class="flex flex-row p-2 pb-3">
+        <div class="flex flex-row w-[30%] items-center">
+          <label for="host" class="z-10 relative left-3 text-sm w-0">
+            Search:{" "}
+          </label>
+          <input
+            type="text"
+            name="host"
+            id="host"
+            class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none sm:text-sm sm:leading-6"
+          />
+        </div>
+        <button
+          class={
+            "rounded-md bg-[#373737] ml-auto mx-4 px-1.5 py-1 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 justify-self-end"
+          }
+          onClick={() => setRefresh(Math.floor(Date.now() / 1000))}
+        >
+          <RefreshIcon additionalClass="scale-75" />
+        </button>
+      </div>
+      <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
+        {Object.entries(headers).map(([header, className]) => (
+          <div
+            key={header}
+            class={`${className} font-semibold font-mono tracking-tight text-md`}
+          >
+            {header}
+          </div>
+        ))}
+        <div class="ml-auto px-4 opacity-0">
+          <Chevron_down />
+        </div>
+      </div>
+      <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
+        {props.rows.map((record) => (
+          <Accordion
+            additionalClass={`${
+              record.staging
+                ? record.deleted_at == 0
+                  ? record.created_at == record.modified_at
+                    ? "bg-green-200"
+                    : "bg-slate-200"
+                  : "bg-red-200"
+                : ""
+            }`}
+          >
+            {
+              <AccordionTitle key={record.uuid}>
+                {Object.entries(headers).map(([header, className]) => (
+                  <div
+                    key={record[header.toLowerCase]}
+                    class={`font-mono ${className}`}
+                  >
+                    {record[header.toLowerCase()]}
+                  </div>
+                ))}
+              </AccordionTitle>
+            }
+            <AccordionContent key={record.uuid}></AccordionContent>
           </Accordion>
         ))}
       </div>

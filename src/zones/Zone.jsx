@@ -80,18 +80,21 @@ function Zone() {
     fetchRecords();
   }, [refresh]);
 
-  const headers = {
-    Host: "w-4/12",
-    Content: "w-5/12 px-2",
-    Type: "w-1/12 px-2",
-    TTL: "w-1/12 px-2",
-  };
-
   if (loading[0]) {
     return (
       <Frame location="zones">
         <div class="flex items-center justify-center h-screen">
           {SpinningCog()}
+        </div>
+      </Frame>
+    );
+  }
+
+  if (error[0]) {
+    return (
+      <Frame location="zones">
+        <div class="flex items-center justify-center h-screen">
+          <p>Error: {error[0].message}</p>
         </div>
       </Frame>
     );
@@ -105,6 +108,14 @@ function Zone() {
           {data[0].name}
         </h1>
       </div>
+
+      <div class="flex-wrap gap-4 mt-12 min-w-[540px]">
+        <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
+          ZONE DETAILS:
+        </p>
+        <div class="flex flex-col gap-2"></div>
+      </div>
+
       <div class="flex-wrap gap-4 mt-12 min-w-[540px]">
         {loading[1] ? (
           <div class="flex justify-center">{SpinningCog()}</div>
@@ -114,7 +125,6 @@ function Zone() {
               ZONE RECORDS:
             </p>
             <RecordAccordionTable
-              headers={headers}
               rows={data[1]}
               key={zoneId}
               zoneId={zoneId}
