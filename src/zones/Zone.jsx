@@ -17,7 +17,11 @@ function Zone() {
   const updateData = (key, data) => {
     setData((prevData) => {
       const updatedData = { ...prevData };
-      updatedData[key] = data;
+      if (data) {
+        updatedData[key] = data;
+      } else {
+        updatedData[key] = [];
+      }
       return updatedData;
     });
   };

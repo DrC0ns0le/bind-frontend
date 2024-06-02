@@ -3,7 +3,7 @@ import { Chevron_down, Chevron_up } from "../components/Icons";
 
 export function Accordion(props) {
   const [open, setOpen] = useState(false);
-  const { children, additionalClass } = props;
+  const { children, additionalClass, disableExpand } = props;
   return (
     <>
       <div
@@ -14,16 +14,18 @@ export function Accordion(props) {
       >
         {children[0]}
         <p class={`ml-auto px-4 duration-200 ${open ? "rotate-180" : ""}`}>
-          <Chevron_down />
+          {disableExpand ? null : <Chevron_down />}
         </p>
       </div>
-      <div
-        class={`w-full translate-y-[1px] transition-all ${
-          open ? "outline outline-1 outline-gray-200" : "hidden"
-        }`}
-      >
-        {children[1]}
-      </div>
+      {disableExpand ? null : (
+        <div
+          class={`w-full translate-y-[1px] transition-all ${
+            open ? "outline outline-1 outline-gray-200" : "hidden"
+          }`}
+        >
+          {children[1]}
+        </div>
+      )}
     </>
   );
 }

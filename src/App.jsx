@@ -4,6 +4,7 @@ import Home from "./Home";
 import Zones from "./zones/Zones";
 import Zone from "./zones/Zone";
 import Apply from "./Apply";
+import WrongPage from "./Errors";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path=":zone" element={<Zone />} />
         </Route>
         <Route path="/apply" element={<Apply />} />
+        <Route path="*" element={<WrongPage />} />
       </Routes>
     </Router>
   );

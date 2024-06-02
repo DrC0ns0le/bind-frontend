@@ -19,17 +19,21 @@ export function RecordAccordionTable(props) {
 
   const [selectedType, setselectedType] = useState(() => {
     const updatedSelectedType = {};
-    props.rows.forEach((record) => {
-      updatedSelectedType[record.uuid] = record.type;
-    });
+    if (props.rows !== null) {
+      props.rows.forEach((record) => {
+        updatedSelectedType[record.uuid] = record.type;
+      });
+    }
     return updatedSelectedType;
   });
 
   const [query, setQuery] = useState(() => {
     const updatedQuery = {};
-    props.rows.forEach((record) => {
-      updatedQuery[record.uuid] = "";
-    });
+    if (props.rows !== null) {
+      props.rows.forEach((record) => {
+        updatedQuery[record.uuid] = "";
+      });
+    }
     return updatedQuery;
   });
   const { refresh, setRefresh } = props;
@@ -50,6 +54,7 @@ export function RecordAccordionTable(props) {
         content: "",
         deleted_at: 0,
         staging: true,
+        add_ptr: false,
         ttl: 3600,
       };
       return [newRecord, ...prevRecord];
@@ -68,7 +73,7 @@ export function RecordAccordionTable(props) {
     });
   };
 
-  const recordsTypes = ["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"];
+  const recordsTypes = ["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT", "PTR"];
 
   function recordsTypeComboBox(record) {
     const filteredType =
@@ -90,7 +95,8 @@ export function RecordAccordionTable(props) {
             return updatedSelectedType;
           });
         }}
-        name="type"
+        // id={record.uuid + "type"}
+        name={record.uuid + "type"}
       >
         <div class="flex flex-row w-full px-3 pr-1 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 sm:text-sm sm:leading-6">
           <Combobox.Input
@@ -103,6 +109,8 @@ export function RecordAccordionTable(props) {
             }}
             displayValue={(recordType) => recordType}
             class="w-full outline-none font-mono"
+            name={record.uuid + "type"}
+            id={record.uuid + "type"}
           />
           <Combobox.Button className="scale-75">
             <Chevron_down />
@@ -159,10 +167,11 @@ export function RecordAccordionTable(props) {
       const formData = new FormData(e.target);
       // create new objct and parse ttl to int
       const newRecord = {
-        type: formData.get("type"),
-        host: formData.get("host"),
-        content: formData.get("content"),
-        ttl: parseInt(formData.get("ttl")),
+        type: formData.get(record.uuid + "type"),
+        host: formData.get(record.uuid + "host"),
+        content: formData.get(record.uuid + "content"),
+        ttl: parseInt(formData.get(record.uuid + "ttl")),
+        add_ptr: formData.get(record.uuid + "add_ptr") === "on",
       };
 
       if (record.uuid === "new") {
@@ -236,19 +245,19 @@ export function RecordAccordionTable(props) {
         <form onSubmit={(e) => handleSubmit(e, record)} class="px-3">
           <div class="flex p-2 place-content-between">
             <div class="flex flex-col w-[10%]">
-              <label for="type" class="p-1 text-sm">
-                Type:{" "}
+              <label for={record.uuid + "type"} class="p-1 text-sm">
+                Type:
               </label>
               {recordsTypeComboBox(record)}
             </div>
             <div class="flex flex-col w-[30%]">
-              <label for="host" class="p-1 text-sm">
-                Hostname:{" "}
+              <label for={record.uuid + "host"} class="p-1 text-sm">
+                Hostname:
               </label>
               <input
                 type="text"
-                name="host"
-                id="host"
+                name={record.uuid + "host"}
+                id={record.uuid + "host"}
                 defaultValue={record.host}
                 placeholder="ubuntu-prod-01.oci"
                 required
@@ -256,13 +265,13 @@ export function RecordAccordionTable(props) {
               />
             </div>
             <div class="flex flex-col w-[45%]">
-              <label for="content" class="p-1 text-sm">
-                Content:{" "}
+              <label for={record.uuid + "content"} class="p-1 text-sm">
+                Content:
               </label>
               <textarea
                 type="text"
-                name="content"
-                id="content"
+                name={record.uuid + "content"}
+                id={record.uuid + "content"}
                 defaultValue={record.content}
                 placeholder="89.0.142.86"
                 required
@@ -270,15 +279,15 @@ export function RecordAccordionTable(props) {
               />
             </div>
             <div class="flex flex-col w-[10%]">
-              <label for="ttl" class="p-1 text-sm">
-                TTL:{" "}
+              <label for={record.uuid + "ttl"} class="p-1 text-sm">
+                TTL:
               </label>
               <input
                 type="number"
                 step="1"
                 pattern="\d+"
-                name="ttl"
-                id="ttl"
+                name={record.uuid + "ttl"}
+                id={record.uuid + "ttl"}
                 defaultValue={record.ttl}
                 placeholder="3600"
                 required
@@ -286,6 +295,21 @@ export function RecordAccordionTable(props) {
               />
             </div>
           </div>
+          {(selectedType[record.uuid] === "A" ||
+            selectedType[record.uuid] === "AAAA") && (
+            <div class="flex flex-row items-center pl-2">
+              <input
+                type="checkbox"
+                name={record.uuid + "add_ptr"}
+                id={record.uuid + "add_ptr"}
+                defaultChecked={record.add_ptr}
+                class="w-4 h-4 checked:bg-gray-800 border-gray-900"
+              />
+              <label for={record.uuid + "add_ptr"} class="p-1 text-sm">
+                Add Reverse DNS (PTR)
+              </label>
+            </div>
+          )}
           <div class="flex flex-row p-2 pb-3 place-content-between">
             <div
               onClick={(e) => handleDelete(record.uuid)}
@@ -353,39 +377,39 @@ export function RecordAccordionTable(props) {
         </div>
       </div>
       <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
-        {allRecords.map((record) => (
-          <Accordion
-            additionalClass={`${
-              record.staging
-                ? record.deleted_at == 0
-                  ? record.created_at == record.modified_at
-                    ? "bg-green-200"
-                    : "bg-slate-200"
-                  : "bg-red-200"
-                : ""
-            }`}
-          >
-            {record.uuid != "new" ? (
-              <AccordionTitle key={record.uuid}>
-                {Object.entries(headers).map(([header, className]) => (
-                  <div
-                    key={record[header.toLowerCase]}
-                    class={`font-mono ${className}`}
-                  >
-                    {record[header.toLowerCase()]}
-                  </div>
-                ))}
-              </AccordionTitle>
-            ) : (
-              <AccordionTitle key={record.uuid}>
-                <p>New Record</p>
-              </AccordionTitle>
-            )}
-            <AccordionContent key={record.uuid}>
-              {recordForm(record)}
-            </AccordionContent>
-          </Accordion>
-        ))}
+        {allRecords != null &&
+          allRecords.map((record) => (
+            <Accordion
+              additionalClass={`${
+                record.staging
+                  ? record.deleted_at == 0
+                    ? record.created_at == record.modified_at
+                      ? "bg-green-200"
+                      : "bg-slate-200"
+                    : "bg-red-200"
+                  : ""
+              }`}
+              key={record.uuid + "accordion"}
+            >
+              {record.uuid != "new" ? (
+                <AccordionTitle>
+                  {Object.entries(headers).map(([header, className]) => (
+                    <div
+                      key={record.uuid + header}
+                      class={`font-mono ${className}`}
+                    >
+                      {record[header.toLowerCase()]}
+                    </div>
+                  ))}
+                </AccordionTitle>
+              ) : (
+                <AccordionTitle>
+                  <p>New Record</p>
+                </AccordionTitle>
+              )}
+              <AccordionContent>{recordForm(record)}</AccordionContent>
+            </Accordion>
+          ))}
       </div>
     </div>
   );
@@ -456,6 +480,8 @@ export function SimpleRecordAccordionTable(props) {
                   : "bg-red-200"
                 : ""
             }`}
+            key={record.uuid}
+            disableExpand={true}
           >
             {
               <AccordionTitle key={record.uuid}>
