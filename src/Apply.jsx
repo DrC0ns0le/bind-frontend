@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from "react";
 import Frame from "./components/Frame";
-import { useParams } from "react-router-dom";
+import { json, useParams } from "react-router-dom";
 import axios from "axios";
 import { SimpleRecordAccordionTable } from "./zones/ZoneRecordTables";
 import { SpinningCog } from "./components/Icons";
+import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 
 function Apply() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState([true, true, false]);
   const [error, setError] = useState(["", "", ""]);
   const [refresh, setRefresh] = useState(Math.floor(Date.now() / 1000));
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth >= 768);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const updateData = (key, data) => {
     setData((prevData) => {
@@ -41,7 +55,7 @@ function Apply() {
     // send post request to backend
     try {
       const response = await axios.post(
-        "http://10.2.1.15:8090/api/v1/staging",
+        "https://bind.internal.leejacksonz.com/api/v1/staging",
         {},
         {
           headers: {
@@ -63,7 +77,7 @@ function Apply() {
     async function fetchStaging() {
       try {
         const response = await axios.get(
-          "http://10.2.1.15:8090/api/v1/staging",
+          "https://bind.internal.leejacksonz.com/api/v1/staging",
           {
             headers: {
               "Content-Type": "application/json",
@@ -82,7 +96,7 @@ function Apply() {
       updateLoading(1, true);
       try {
         const response = await axios.get(
-          "http://10.2.1.15:8090/api/v1/render",
+          "https://bind.internal.leejacksonz.com/api/v1/render",
           {
             headers: {
               "Content-Type": "application/json",
@@ -141,16 +155,17 @@ function Apply() {
         <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
         {data[0].records !== null ? (
           <p class="text-2xl mt-4">
-            {"There's " +
+            {"There is " +
               data[0].records.length +
-              " change(s) ready to be applied."}
+              (data[0].records.length === 1 ? " record" : " records") +
+              " in staging pending to be applied."}
           </p>
         ) : (
           <p class="text-2xl mt-4">All changes have been applied.</p>
         )}
       </div>
 
-      <div class="flex-wrap gap-4 mt-12 min-w-[540px]">
+      <div class="flex-wrap gap-4 mt-12 min-w-[340px]">
         {loading[1] ? (
           <div class="flex justify-center h-1/2">{SpinningCog()}</div>
         ) : data[0].records !== null ? (
@@ -175,6 +190,32 @@ function Apply() {
               >
                 Apply
               </button>
+            </div>
+            <div class="flex flex-col place-content-end">
+              <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
+                PREVIEW:
+              </p>
+              {Object.entries(data[1].before).map((file, content) => (
+                <>
+                  <p class="font-mono text-xs md:text-sm tracking-tighter font-black pb-4 pl-2 text-[#343434] break-words">
+                    {file[0]}
+                  </p>
+
+                  <DiffEditor
+                    theme="vs-light"
+                    height="400px"
+                    language="json"
+                    key={file}
+                    original={data[1].before[file[0]]}
+                    modified={data[1].after[file[0]]}
+                    options={{
+                      readOnly: true,
+                      renderSideBySide: isLargeScreen,
+                    }}
+                  />
+                  <hr class="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+                </>
+              ))}
             </div>
           </>
         ) : (

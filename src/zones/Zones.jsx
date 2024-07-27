@@ -12,11 +12,14 @@ function Zones() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("http://10.2.1.15:8090/api/v1/zones", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://bind.internal.leejacksonz.com/api/v1/zones",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         setData(response.data);
         setLoading(false);
       } catch (error) {

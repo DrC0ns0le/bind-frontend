@@ -46,7 +46,7 @@ function Zone() {
     async function fetchZone() {
       try {
         const response = await axios.get(
-          "http://10.2.1.15:8090/api/v1/zones/" + zoneId,
+          "https://bind.internal.leejacksonz.com/api/v1/zones/" + zoneId,
           {
             headers: {
               "Content-Type": "application/json",
@@ -65,7 +65,9 @@ function Zone() {
       updateLoading(1, true);
       try {
         const response = await axios.get(
-          "http://10.2.1.15:8090/api/v1/zones/" + zoneId + "/records",
+          "https://bind.internal.leejacksonz.com/api/v1/zones/" +
+            zoneId +
+            "/records",
           {
             headers: {
               "Content-Type": "application/json",
@@ -99,6 +101,8 @@ function Zone() {
       <Frame location="zones">
         <div class="flex items-center justify-center h-screen">
           <p>Error: {error[0].message}</p>
+          <p>---</p>
+          <p>{error[0].response.data.message}</p>
         </div>
       </Frame>
     );
@@ -113,21 +117,29 @@ function Zone() {
         </h1>
       </div>
 
-      <div class="flex-wrap gap-4 mt-12 min-w-[540px]">
+      <div class="flex-wrap sm:gap-4 mt-12 min-w-[340px]">
         <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
           ZONE DETAILS:
         </p>
         <div class="flex flex-col gap-2"></div>
       </div>
-
-      <div class="flex-wrap gap-4 mt-12 min-w-[540px]">
+      <hr class="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+      <div class="flex-wrap sm:gap-4 mt-12 min-w-[340px]">
+        <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
+          ZONE RECORDS:
+        </p>
         {loading[1] ? (
           <div class="flex justify-center">{SpinningCog()}</div>
+        ) : error[1] ? (
+          <div class="flex flex-col items-center justify-center pt-8">
+            <p>Error: Failed to fetch records</p>
+            <p class="p-2">---</p>
+            <p>
+              {error[1].response.status}: {error[1].response.data.message}
+            </p>
+          </div>
         ) : (
           <>
-            <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
-              ZONE RECORDS:
-            </p>
             <RecordAccordionTable
               rows={data[1]}
               key={zoneId}

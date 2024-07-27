@@ -6,16 +6,24 @@ export function Accordion(props) {
   const { children, additionalClass, disableExpand } = props;
   return (
     <>
-      <div
-        class={`flex items-center p-1 px-4 hover:font-medium outline-gray-200 ease-in-out duration-200 cursor-pointer ${additionalClass} ${
-          open ? "font-medium" : ""
-        }`}
-        onClick={() => setOpen(!open)}
-      >
-        {children[0]}
-        <p class={`ml-auto px-4 duration-200 ${open ? "rotate-180" : ""}`}>
-          {disableExpand ? null : <Chevron_down />}
-        </p>
+      <div class={"flex flex-row " + additionalClass}>
+        <div
+          class={`flex flex-col md:flex-row md:items-center p-1 px-3 md:px-4 hover:font-semibold border-gray-200 ease-in-out duration-200 cursor-pointer border-y-[0.5px] sm:border-none w-full ${
+            open ? "font-semibold ease-in-out" : ""
+          }`}
+          onClick={() => setOpen(!open)}
+        >
+          {children[0]}
+        </div>
+        {disableExpand ? null : (
+          <p
+            class={`ml-auto sm:px-4 py-3 sm:py-0 duration-200 self-center ${
+              open ? "rotate-180" : ""
+            }`}
+          >
+            <Chevron_down />
+          </p>
+        )}
       </div>
       {disableExpand ? null : (
         <div

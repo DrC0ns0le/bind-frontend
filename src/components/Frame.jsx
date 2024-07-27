@@ -4,7 +4,7 @@ import { useMediaQuery } from "react-responsive";
 
 function Frame(props) {
   const { location } = props;
-  const isMdOrLarger = useMediaQuery({ minWidth: 768 });
+  const isMdOrLarger = useMediaQuery({ minWidth: 1080 });
 
   const [showSidebar, setShowSidebar] = useState(isMdOrLarger);
 
@@ -15,7 +15,7 @@ function Frame(props) {
       viewBox="0 0 24 24"
       stroke-width="1.5"
       stroke="currentColor"
-      class="w-6 h-6"
+      class="w-8 h-8"
     >
       <path
         stroke-linecap="round"
@@ -28,7 +28,7 @@ function Frame(props) {
   return (
     <>
       <div>
-        <div class="h-screen w-screen flex justify-center">
+        <div class="h-screen w-screen flex flex-row justify-center">
           <div
             class={`bg-gray-150 ${
               showSidebar ? "md:pl-32 w-[1%] min-w-24" : "w-0 min-w-0"
@@ -36,20 +36,18 @@ function Frame(props) {
           >
             <Sidebar location={location} />
           </div>
-          <div class="bg-gray-150 p-12 w-full max-w-screen-2xl overflow-auto">
-            <button
-              class="pb-4 ml-2 scale-125"
-              onClick={() => setShowSidebar(!showSidebar)}
-            >
+          <div class="flex flex-col bg-gray-150 p-4 pb-1 sm:p-12 sm:pb-2 2xl:px-48 w-full max-w-screen-2xl overflow-auto">
+            <button class="pb-4" onClick={() => setShowSidebar(!showSidebar)}>
               {nav_hamburger}
             </button>
-            {props.children}
+            <div class="grow">{props.children}</div>
+
+            <footer class="text-xs sm:text-sm text-gray-600 text-center font-light self-center py-1 sm:py-4 sm:pt-8">
+              Copyright © 2024 Lee Jack Sonz. All rights reserved.
+            </footer>
           </div>
         </div>
       </div>
-      <footer class="text-sm text-gray-600 text-center font-light sticky overflow-hidden bg-white op w-screen p-4">
-        Copyright © 2024 Lee Jack Sonz. All rights reserved.
-      </footer>
     </>
   );
 }

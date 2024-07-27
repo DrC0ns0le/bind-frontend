@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import {
   Chevron_down,
@@ -16,6 +16,20 @@ import axios from "axios";
 
 export function RecordAccordionTable(props) {
   const [allRecords, setAllRecords] = useState(props.rows);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth >= 768);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const [selectedType, setselectedType] = useState(() => {
     const updatedSelectedType = {};
@@ -39,10 +53,10 @@ export function RecordAccordionTable(props) {
   const { refresh, setRefresh } = props;
 
   const headers = {
+    Type: "w-1/12",
     Host: "w-4/12",
-    Content: "w-5/12 px-2",
-    Type: "w-1/12 px-2",
-    TTL: "w-1/12 px-2",
+    Content: "w-5/12",
+    TTL: "w-1/12",
   };
 
   const addNewRecord = () => {
@@ -98,7 +112,7 @@ export function RecordAccordionTable(props) {
         // id={record.uuid + "type"}
         name={record.uuid + "type"}
       >
-        <div class="flex flex-row w-full px-3 pr-1 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 sm:text-sm sm:leading-6">
+        <div class="flex flex-row w-full px-3 pr-1 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 md:text-sm md:leading-6">
           <Combobox.Input
             onChange={(event) => {
               setQuery((prevQuery) => {
@@ -132,7 +146,7 @@ export function RecordAccordionTable(props) {
             });
           }}
         >
-          <Combobox.Options className="font-mono cursor-pointer p-1 max-h-32 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-gb2 ring-1 ring-black ring-opacity-5 sm:text-sm">
+          <Combobox.Options className="font-mono cursor-pointer p-1 max-h-32 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-gb2 ring-1 ring-black ring-opacity-5 md:text-sm">
             {filteredType.map((recordType) => (
               /* Use the `active` state to conditionally style the active option. */
               /* Use the `selected` state to conditionally style the selected option. */
@@ -160,6 +174,11 @@ export function RecordAccordionTable(props) {
     );
   }
 
+  // function for fuzzy search filtering
+  const handleQueryChange = (query) => {
+    setSearchQuery(query);
+  };
+
   const recordForm = (record) => {
     const handleSubmit = async (e, record) => {
       // this function send put request to backend
@@ -177,7 +196,9 @@ export function RecordAccordionTable(props) {
       if (record.uuid === "new") {
         try {
           const response = await axios.post(
-            "http://10.2.1.15:8090/api/v1/zones/" + props.zoneId + "/records",
+            "https://bind.internal.leejacksonz.com/api/v1/zones/" +
+              props.zoneId +
+              "/records",
             newRecord,
             {
               headers: {
@@ -197,7 +218,7 @@ export function RecordAccordionTable(props) {
       } else {
         try {
           const response = await axios.put(
-            "http://10.2.1.15:8090/api/v1/zones/" +
+            "https://bind.internal.leejacksonz.com/api/v1/zones/" +
               props.zoneId +
               "/records/" +
               record.uuid,
@@ -222,7 +243,7 @@ export function RecordAccordionTable(props) {
     const handleDelete = async (uuid) => {
       try {
         const response = await axios.delete(
-          "http://10.2.1.15:8090/api/v1/zones/" +
+          "https://bind.internal.leejacksonz.com/api/v1/zones/" +
             props.zoneId +
             "/records/" +
             uuid,
@@ -243,15 +264,21 @@ export function RecordAccordionTable(props) {
     return (
       <>
         <form onSubmit={(e) => handleSubmit(e, record)} class="px-3">
-          <div class="flex p-2 place-content-between">
-            <div class="flex flex-col w-[10%]">
-              <label for={record.uuid + "type"} class="p-1 text-sm">
+          <div class="flex flex-col md:flex-row p-2 place-content-between">
+            <div class="flex flex-col w-[30%] md:w-[10%]">
+              <label
+                for={record.uuid + "type"}
+                class="p-1 text-sm pt-4 md:pt-1"
+              >
                 Type:
               </label>
               {recordsTypeComboBox(record)}
             </div>
-            <div class="flex flex-col w-[30%]">
-              <label for={record.uuid + "host"} class="p-1 text-sm">
+            <div class="flex flex-col md:w-[30%]">
+              <label
+                for={record.uuid + "host"}
+                class="p-1 text-sm pt-4 md:pt-1"
+              >
                 Hostname:
               </label>
               <input
@@ -261,11 +288,14 @@ export function RecordAccordionTable(props) {
                 defaultValue={record.host}
                 placeholder="ubuntu-prod-01.oci"
                 required
-                class="font-mono block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none sm:text-sm sm:leading-6"
+                class="font-mono block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
               />
             </div>
-            <div class="flex flex-col w-[45%]">
-              <label for={record.uuid + "content"} class="p-1 text-sm">
+            <div class="flex flex-col md:w-[45%]">
+              <label
+                for={record.uuid + "content"}
+                class="p-1 text-sm pt-4 md:pt-1"
+              >
                 Content:
               </label>
               <textarea
@@ -275,11 +305,11 @@ export function RecordAccordionTable(props) {
                 defaultValue={record.content}
                 placeholder="89.0.142.86"
                 required
-                class="font-mono w-full h-[36px] min-h-9 block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none resize-y sm:text-sm sm:leading-6"
+                class="font-mono w-full h-[128px] touch:h-[128px] md:h-[36px] min-h-9 block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none resize-y md:text-sm md:leading-6"
               />
             </div>
-            <div class="flex flex-col w-[10%]">
-              <label for={record.uuid + "ttl"} class="p-1 text-sm">
+            <div class="flex flex-col w-[40%] md:w-[10%]">
+              <label for={record.uuid + "ttl"} class="p-1 text-sm pt-4 md:pt-1">
                 TTL:
               </label>
               <input
@@ -291,7 +321,7 @@ export function RecordAccordionTable(props) {
                 defaultValue={record.ttl}
                 placeholder="3600"
                 required
-                class="font-mono w-full block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none sm:text-sm sm:leading-6"
+                class="font-mono w-full block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
               />
             </div>
           </div>
@@ -313,21 +343,21 @@ export function RecordAccordionTable(props) {
           <div class="flex flex-row p-2 pb-3 place-content-between">
             <div
               onClick={(e) => handleDelete(record.uuid)}
-              class="rounded-md outline outline-[1px] outline-[#b92424] px-2.5 py-1.5 text-sm text-[#b92424] shadow-gb2 hover:shadow-gba2 hover:text-white hover:bg-[#b92424] ease-in-out duration-300 active:scale-95 w-[86px] h-[32px] text-center cursor-pointer"
+              class="rounded-md self-center outline outline-[1px] outline-[#b92424] px-2.5 py-1.5 text-sm text-[#b92424] shadow-gb2 hover:shadow-gba2 hover:text-white hover:bg-[#b92424] ease-in-out duration-300 active:scale-95 w-[86px] h-[32px] text-center cursor-pointer"
             >
               Delete
             </div>
+            <p class="pl-2 md:pb-1 self-end text-gray-500 text-[12px] border-none grow ">
+              {record.uuid !== "new" ? `UUID: ${record.uuid}` : ""}
+            </p>
             <button
               type="submit"
-              class="rounded-md bg-[#373737] px-4 py-2 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 active:scale-95 place-self-end"
+              class="rounded-md self-center bg-[#373737] px-4 py-2 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 active:scale-95 place-self-end"
             >
               Submit
             </button>
           </div>
         </form>
-        <p class="absolute left-28 bottom-4 text-center text-gray-500 text-[12px] border-none">
-          {record.uuid !== "new" ? `UUID: ${record.uuid}` : ""}
-        </p>
       </>
     );
   };
@@ -343,7 +373,8 @@ export function RecordAccordionTable(props) {
             type="text"
             name="host"
             id="host"
-            class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none sm:text-sm sm:leading-6"
+            class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
+            onChange={(e) => handleQueryChange(e.target.value)}
           />
         </div>
         <button
@@ -363,53 +394,92 @@ export function RecordAccordionTable(props) {
           <PlusIcon additionalClass="scale-75" />
         </button>
       </div>
-      <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
-        {Object.entries(headers).map(([header, className]) => (
-          <div
-            key={header}
-            class={`${className} font-semibold font-mono tracking-tight text-md`}
-          >
-            {header}
-          </div>
-        ))}
-        <div class="ml-auto px-4 opacity-0">
-          <Chevron_down />
-        </div>
-      </div>
-      <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
-        {allRecords != null &&
-          allRecords.map((record) => (
-            <Accordion
-              additionalClass={`${
-                record.staging
-                  ? record.deleted_at == 0
-                    ? record.created_at == record.modified_at
-                      ? "bg-green-200"
-                      : "bg-slate-200"
-                    : "bg-red-200"
-                  : ""
-              }`}
-              key={record.uuid + "accordion"}
+      {isLargeScreen ? (
+        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 pr-[72px] ">
+          {Object.entries(headers).map(([header, className]) => (
+            <div
+              key={header}
+              class={`${className} font-semibold font-mono tracking-tight text-md`}
             >
-              {record.uuid != "new" ? (
-                <AccordionTitle>
-                  {Object.entries(headers).map(([header, className]) => (
-                    <div
-                      key={record.uuid + header}
-                      class={`font-mono ${className}`}
-                    >
-                      {record[header.toLowerCase()]}
-                    </div>
-                  ))}
-                </AccordionTitle>
-              ) : (
-                <AccordionTitle>
-                  <p>New Record</p>
-                </AccordionTitle>
-              )}
-              <AccordionContent>{recordForm(record)}</AccordionContent>
-            </Accordion>
+              {header}
+            </div>
           ))}
+        </div>
+      ) : (
+        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
+          Zone Records
+        </div>
+      )}
+      <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-y-clip">
+        {allRecords != null &&
+          allRecords.map(
+            (
+              record // fuzzy filter
+            ) =>
+              !searchQuery.trim() ||
+              record.uuid.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              record.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              record.host.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              record.content
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ? (
+                <Accordion
+                  additionalClass={`${
+                    record.staging
+                      ? record.deleted_at == 0
+                        ? record.created_at == record.modified_at
+                          ? "bg-green-200"
+                          : "bg-slate-200"
+                        : "bg-red-200"
+                      : ""
+                  }`}
+                  key={record.uuid + "accordion"}
+                >
+                  {isLargeScreen ? (
+                    record.uuid != "new" ? (
+                      <AccordionTitle>
+                        {Object.entries(headers).map(([header, className]) => (
+                          <div
+                            key={record.uuid + header}
+                            class={`font-mono ${className}`}
+                          >
+                            {record[header.toLowerCase()]}
+                          </div>
+                        ))}
+                      </AccordionTitle>
+                    ) : (
+                      <AccordionTitle>
+                        <p>New Record</p>
+                      </AccordionTitle>
+                    )
+                  ) : record.uuid != "new" ? (
+                    <AccordionTitle>
+                      {Object.entries(headers).map(([header, _]) => (
+                        <>
+                          <div
+                            key={record.uuid + header}
+                            class={`font-semibold uppercase pt-2 text-xs tracking-wide`}
+                          >
+                            {header}
+                          </div>
+                          <div
+                            key={record.uuid + header}
+                            class={`font-mono text-wrap break-all tracking-tight`}
+                          >
+                            {record[header.toLowerCase()]}
+                          </div>
+                        </>
+                      ))}
+                    </AccordionTitle>
+                  ) : (
+                    <AccordionTitle>
+                      <p>New Record</p>
+                    </AccordionTitle>
+                  )}
+                  <AccordionContent>{recordForm(record)}</AccordionContent>
+                </Accordion>
+              ) : null
+          )}
       </div>
     </div>
   );
@@ -424,6 +494,19 @@ export function SimpleRecordAccordionTable(props) {
     return updatedQuery;
   });
   const { refresh, setRefresh } = props;
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth >= 768);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const headers = {
     Host: "w-4/12",
@@ -443,7 +526,7 @@ export function SimpleRecordAccordionTable(props) {
             type="text"
             name="host"
             id="host"
-            class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none sm:text-sm sm:leading-6"
+            class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
           />
         </div>
         <button
@@ -455,50 +538,72 @@ export function SimpleRecordAccordionTable(props) {
           <RefreshIcon additionalClass="scale-75" />
         </button>
       </div>
-      <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
-        {Object.entries(headers).map(([header, className]) => (
-          <div
-            key={header}
-            class={`${className} font-semibold font-mono tracking-tight text-md`}
-          >
-            {header}
-          </div>
-        ))}
-        <div class="ml-auto px-4 opacity-0">
-          <Chevron_down />
+      {isLargeScreen ? (
+        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
+          {Object.entries(headers).map(([header, className]) => (
+            <div
+              key={header}
+              class={`${className} font-semibold font-mono tracking-tight text-md`}
+            >
+              {header}
+            </div>
+          ))}
         </div>
-      </div>
-      <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
-        {props.rows.map((record) => (
-          <Accordion
-            additionalClass={`${
-              record.staging
-                ? record.deleted_at == 0
-                  ? record.created_at == record.modified_at
-                    ? "bg-green-200"
-                    : "bg-slate-200"
-                  : "bg-red-200"
-                : ""
-            }`}
-            key={record.uuid}
-            disableExpand={true}
-          >
-            {
-              <AccordionTitle key={record.uuid}>
-                {Object.entries(headers).map(([header, className]) => (
-                  <div
-                    key={record[header.toLowerCase]}
-                    class={`font-mono ${className}`}
-                  >
-                    {record[header.toLowerCase()]}
-                  </div>
-                ))}
-              </AccordionTitle>
-            }
-            <AccordionContent key={record.uuid}></AccordionContent>
-          </Accordion>
-        ))}
-      </div>
+      ) : (
+        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
+          Staging Records
+        </div>
+      )}
+      {
+        <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
+          {props.rows.map((record) => (
+            <Accordion
+              additionalClass={`${
+                record.staging
+                  ? record.deleted_at == 0
+                    ? record.created_at == record.modified_at
+                      ? "bg-green-200"
+                      : "bg-slate-200"
+                    : "bg-red-200"
+                  : ""
+              }`}
+              key={record.uuid}
+              disableExpand={true}
+            >
+              {
+                <AccordionTitle key={record.uuid}>
+                  {Object.entries(headers).map(([header, className]) =>
+                    isLargeScreen ? (
+                      <div
+                        key={record[header.toLowerCase]}
+                        class={`font-mono ${className}`}
+                      >
+                        {record[header.toLowerCase()]}
+                      </div>
+                    ) : (
+                      <>
+                        <div
+                          key={record.uuid + header}
+                          class={`font-semibold uppercase pt-2 text-xs tracking-wide`}
+                        >
+                          {header}
+                        </div>
+                        <div
+                          key={record.uuid + header}
+                          class={`font-mono text-wrap break-all tracking-tight`}
+                        >
+                          {record[header.toLowerCase()]}
+                        </div>
+                      </>
+                    )
+                  )}
+                </AccordionTitle>
+              }
+              <AccordionContent key={record.uuid}></AccordionContent>
+            </Accordion>
+          ))}
+        </div>
+      }
     </div>
   );
 }
