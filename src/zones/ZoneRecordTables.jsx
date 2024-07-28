@@ -455,12 +455,12 @@ export function RecordAccordionTable(props) {
                   ) : record.uuid != "new" ? (
                     <AccordionTitle>
                       {Object.entries(headers).map(([header, _]) => (
-                        <>
+                        <div class="flex flex-row">
                           <div
                             key={record.uuid + header}
-                            class={`font-semibold uppercase pt-2 text-xs tracking-wide`}
+                            class={`font-mono min-w-20 text-left pr-2 tracking-tighter`}
                           >
-                            {header}
+                            {header + ":"}
                           </div>
                           <div
                             key={record.uuid + header}
@@ -468,7 +468,7 @@ export function RecordAccordionTable(props) {
                           >
                             {record[header.toLowerCase()]}
                           </div>
-                        </>
+                        </div>
                       ))}
                     </AccordionTitle>
                   ) : (

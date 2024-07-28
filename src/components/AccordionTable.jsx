@@ -6,29 +6,35 @@ export function Accordion(props) {
   const { children, additionalClass, disableExpand } = props;
   return (
     <>
-      <div class={"flex flex-row " + additionalClass}>
+      <div
+        class={
+          "flex flex-row cursor-pointer border-y-[0.5px] border-gray-200 " +
+          additionalClass +
+          (open ? " md:border-y-[1px]" : " md:border-none")
+        }
+        onClick={() => setOpen(!open)}
+      >
         <div
-          class={`flex flex-col md:flex-row md:items-center p-1 px-3 md:px-4 hover:font-semibold border-gray-200 ease-in-out duration-200 cursor-pointer border-y-[0.5px] sm:border-none w-full ${
-            open ? "font-semibold ease-in-out" : ""
+          class={`flex flex-col md:flex-row md:items-center p-2 px-3 md:p-[5px] md:px-4 hover:font-semibold ease-in-out duration-200 w-full ${
+            open ? "font-semibold " : ""
           }`}
-          onClick={() => setOpen(!open)}
         >
           {children[0]}
         </div>
         {disableExpand ? null : (
-          <p
-            class={`ml-auto sm:px-4 py-3 sm:py-0 duration-200 self-center ${
+          <div
+            class={`ml-auto md:px-4 sm:py-0 duration-500 self-center ${
               open ? "rotate-180" : ""
             }`}
           >
             <Chevron_down />
-          </p>
+          </div>
         )}
       </div>
       {disableExpand ? null : (
         <div
-          class={`w-full translate-y-[1px] transition-all ${
-            open ? "outline outline-1 outline-gray-200" : "hidden"
+          class={`w-full transition-all overflow-hidden ease-in-out duration-[500ms] border-gray-200" ${
+            open ? "md:border-b-[1px] max-h-[1000px]" : "max-h-0 "
           }`}
         >
           {children[1]}
