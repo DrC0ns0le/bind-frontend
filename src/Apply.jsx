@@ -50,8 +50,10 @@ function Apply() {
   };
 
   const handleApply = async () => {
+    // clear data[0].records
+    updateData(0, { records: null });
     // set loading
-    updateLoading(0, true);
+    updateLoading(2, true);
     // send post request to backend
     try {
       const response = await axios.post(
@@ -70,6 +72,33 @@ function Apply() {
       console.log(error);
       updateLoading(2, false);
       updateError(2, error);
+    }
+  };
+
+  const handleDeploy = async () => {
+    // clear data[0].records
+    updateData(0, { records: null });
+    // set data[2] = false
+    updateData(2, false);
+    // set loading
+    updateLoading(3, true);
+    // send post request to backend
+    try {
+      const response = await axios.post(
+        "https://bind.internal.leejacksonz.com/api/v1/deploy",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      updateLoading(3, false);
+      updateData(3, response.data.data);
+    } catch (error) {
+      console.log(error);
+      updateLoading(3, false);
+      updateError(3, error);
     }
   };
 
@@ -111,8 +140,28 @@ function Apply() {
       }
     }
 
+    async function fetchDeploy() {
+      updateLoading(2, true);
+      try {
+        const response = await axios.get(
+          "https://bind.internal.leejacksonz.com/api/v1/deploy",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        updateData(2, response.data.data);
+        updateLoading(2, false);
+      } catch (error) {
+        updateError(2, error);
+        updateLoading(2, false);
+      }
+    }
+
     fetchStaging();
     fetchRender();
+    fetchDeploy();
   }, [refresh]);
 
   if (loading[0]) {
@@ -125,17 +174,17 @@ function Apply() {
     );
   }
 
-  if (loading[2]) {
-    return (
-      <Frame location="apply">
-        <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
-        <p class="text-2xl mt-4">Applying changes, please wait...</p>
-        <div class="flex flex-col items-center justify-center h-1/2">
-          {SpinningCog()}
-        </div>
-      </Frame>
-    );
-  }
+  // if (loading[2]) {
+  //   return (
+  //     <Frame location="apply">
+  //       <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
+  //       <p class="text-2xl mt-4">Applying changes, please wait...</p>
+  //       <div class="flex flex-col items-center justify-center h-1/2">
+  //         {SpinningCog()}
+  //       </div>
+  //     </Frame>
+  //   );
+  // }
 
   if (error[0]) {
     return (
@@ -160,12 +209,19 @@ function Apply() {
               (data[0].records.length === 1 ? " record" : " records") +
               " in staging pending to be applied."}
           </p>
+        ) : data[2] ? (
+          <p class="text-2xl mt-4">Ready to deploy the new configuration.</p>
+        ) : loading[2] ? (
+          <p class="text-2xl mt-4">Committing changes, please wait...</p>
+        ) : loading[3] ? (
+          <p class="text-2xl mt-4">Applying changes, please wait...</p>
         ) : (
           <p class="text-2xl mt-4">All changes have been applied.</p>
         )}
       </div>
 
       <div class="flex-wrap gap-4 mt-12 min-w-[340px]">
+        {/* Staging */}
         {loading[1] ? (
           <div class="flex justify-center h-1/2">{SpinningCog()}</div>
         ) : data[0].records !== null ? (
@@ -217,6 +273,48 @@ function Apply() {
                 </>
               ))}
             </div>
+          </>
+        ) : (
+          <></>
+        )}
+        {/* Deployment */}
+        {loading[2] ? (
+          <div class="flex justify-center h-1/2">{SpinningCog()}</div>
+        ) : data[2] ? (
+          <div>
+            <div class="flex flex-row place-content-end">
+              <button
+                type="submit"
+                class="rounded-md bg-[#373737] mt-8 mr-2 px-4 py-2 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 active:scale-95 place-self-end"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDeploy();
+                }}
+              >
+                Deploy
+              </button>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+        {/* Deployment Outcome */}
+        {loading[3] ? (
+          <div class="flex justify-center h-1/2">{SpinningCog()}</div>
+        ) : data[3] ? (
+          <>
+            <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
+              Deployment Outcome:
+            </p>
+            <Editor
+              theme="vs-light"
+              height="400px"
+              language="json"
+              value={data[3]}
+              options={{
+                readOnly: true,
+              }}
+            />
           </>
         ) : (
           <></>
