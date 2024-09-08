@@ -1,8 +1,9 @@
 services:
   bind-frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: registry.internal.leejacksonz.com/bind-frontend:latest
     ports:
       - 9173:80
     restart: always
