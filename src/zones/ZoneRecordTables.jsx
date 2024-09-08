@@ -13,11 +13,15 @@ import {
   AccordionTable,
 } from "../components/AccordionTable";
 import axios from "axios";
+import { useNotification } from "../components/Alert";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export function RecordAccordionTable(props) {
   const [allRecords, setAllRecords] = useState(props.rows);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
+  const addNotification = useNotification();
 
   useEffect(() => {
     function handleResize() {
@@ -196,9 +200,7 @@ export function RecordAccordionTable(props) {
       if (record.uuid === "new") {
         try {
           const response = await axios.post(
-            "https://bind.internal.leejacksonz.com/api/v1/zones/" +
-              props.zoneId +
-              "/records",
+            apiUrl + "api/v1/zones/" + props.zoneId + "/records",
             newRecord,
             {
               headers: {
@@ -207,8 +209,13 @@ export function RecordAccordionTable(props) {
             }
           );
           console.log(response.data);
+          addNotification("success", response.data.message);
         } catch (error) {
           console.log(error);
+          addNotification(
+            "error",
+            "Failed to create record \n" + error.response.data.message
+          );
         }
 
         // delete record with new uuid
@@ -218,10 +225,7 @@ export function RecordAccordionTable(props) {
       } else {
         try {
           const response = await axios.put(
-            "https://bind.internal.leejacksonz.com/api/v1/zones/" +
-              props.zoneId +
-              "/records/" +
-              record.uuid,
+            apiUrl + "api/v1/zones/" + props.zoneId + "/records/" + record.uuid,
             newRecord,
             {
               headers: {
@@ -230,8 +234,13 @@ export function RecordAccordionTable(props) {
             }
           );
           console.log(response.data);
+          addNotification("success", response.data.message);
         } catch (error) {
           console.log(error);
+          addNotification(
+            "error",
+            "Failed to update record \n" + error.response.data.message
+          );
         }
       }
       // wait 300ms before refresh
@@ -243,10 +252,7 @@ export function RecordAccordionTable(props) {
     const handleDelete = async (uuid) => {
       try {
         const response = await axios.delete(
-          "https://bind.internal.leejacksonz.com/api/v1/zones/" +
-            props.zoneId +
-            "/records/" +
-            uuid,
+          apiUrl + "api/v1/zones/" + props.zoneId + "/records/" + uuid,
           {
             headers: {
               "Content-Type": "application/json",
@@ -254,8 +260,10 @@ export function RecordAccordionTable(props) {
           }
         );
         console.log(response.data);
+        addNotification("success", response.data.message);
       } catch (error) {
         console.log(error);
+        addNotification("warning", "Failed to delete record \n" + error);
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setRefresh(Math.floor(Date.now() / 1000));
@@ -267,7 +275,7 @@ export function RecordAccordionTable(props) {
           <div class="flex flex-col md:flex-row p-2 place-content-between">
             <div class="flex flex-col w-[30%] md:w-[10%]">
               <label
-                for={record.uuid + "type"}
+                htmlFor={record.uuid + "type"}
                 class="p-1 text-sm pt-4 md:pt-1"
               >
                 Type:
@@ -276,7 +284,7 @@ export function RecordAccordionTable(props) {
             </div>
             <div class="flex flex-col md:w-[30%]">
               <label
-                for={record.uuid + "host"}
+                htmlFor={record.uuid + "host"}
                 class="p-1 text-sm pt-4 md:pt-1"
               >
                 Hostname:
@@ -293,7 +301,7 @@ export function RecordAccordionTable(props) {
             </div>
             <div class="flex flex-col md:w-[45%]">
               <label
-                for={record.uuid + "content"}
+                htmlFor={record.uuid + "content"}
                 class="p-1 text-sm pt-4 md:pt-1"
               >
                 Content:
@@ -309,7 +317,10 @@ export function RecordAccordionTable(props) {
               />
             </div>
             <div class="flex flex-col w-[40%] md:w-[10%]">
-              <label for={record.uuid + "ttl"} class="p-1 text-sm pt-4 md:pt-1">
+              <label
+                htmlFor={record.uuid + "ttl"}
+                class="p-1 text-sm pt-4 md:pt-1"
+              >
                 TTL:
               </label>
               <input
@@ -335,7 +346,7 @@ export function RecordAccordionTable(props) {
                 defaultChecked={record.add_ptr}
                 class="w-4 h-4 checked:bg-gray-800 border-gray-900"
               />
-              <label for={record.uuid + "add_ptr"} class="p-1 text-sm">
+              <label htmlFor={record.uuid + "add_ptr"} class="p-1 text-sm">
                 Add Reverse DNS (PTR)
               </label>
             </div>
@@ -366,7 +377,7 @@ export function RecordAccordionTable(props) {
     <div class="flex flex-col">
       <div class="flex flex-row p-2 pb-3">
         <div class="flex flex-row w-[30%] items-center">
-          <label for="host" class="z-10 relative left-3 text-sm w-0">
+          <label htmlFor="host" class="z-10 relative left-3 text-sm w-0">
             Search:{" "}
           </label>
           <input
@@ -437,10 +448,10 @@ export function RecordAccordionTable(props) {
                 >
                   {isLargeScreen ? (
                     record.uuid != "new" ? (
-                      <AccordionTitle>
+                      <AccordionTitle key={record.uuid + "title"}>
                         {Object.entries(headers).map(([header, className]) => (
                           <div
-                            key={record.uuid + header}
+                            key={record.uuid + header + "key"}
                             class={`font-mono ${className}`}
                           >
                             {record[header.toLowerCase()]}
@@ -453,17 +464,17 @@ export function RecordAccordionTable(props) {
                       </AccordionTitle>
                     )
                   ) : record.uuid != "new" ? (
-                    <AccordionTitle>
+                    <AccordionTitle key={record.uuid + "title"}>
                       {Object.entries(headers).map(([header, _]) => (
-                        <div class="flex flex-row">
+                        <div class="flex flex-row" key={record.uuid + header}>
                           <div
-                            key={record.uuid + header}
+                            key={record.uuid + header + "key"}
                             class={`font-mono min-w-20 text-left pr-2 tracking-tighter`}
                           >
                             {header + ":"}
                           </div>
                           <div
-                            key={record.uuid + header}
+                            key={record.uuid + header + "value"}
                             class={`font-mono text-wrap break-all tracking-tight`}
                           >
                             {record[header.toLowerCase()]}
@@ -519,7 +530,7 @@ export function SimpleRecordAccordionTable(props) {
     <div class="flex flex-col">
       <div class="flex flex-row p-2 pb-3">
         <div class="flex flex-row w-[30%] items-center">
-          <label for="host" class="z-10 relative left-3 text-sm w-0">
+          <label htmlFor="host" class="z-10 relative left-3 text-sm w-0">
             Search:{" "}
           </label>
           <input
@@ -583,13 +594,13 @@ export function SimpleRecordAccordionTable(props) {
                     ) : (
                       <>
                         <div
-                          key={record.uuid + header}
+                          key={record.uuid + header + "header"}
                           class={`font-semibold uppercase pt-2 text-xs tracking-wide`}
                         >
                           {header}
                         </div>
                         <div
-                          key={record.uuid + header}
+                          key={record.uuid + header + "value"}
                           class={`font-mono text-wrap break-all tracking-tight`}
                         >
                           {record[header.toLowerCase()]}

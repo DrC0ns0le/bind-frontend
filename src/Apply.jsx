@@ -5,6 +5,9 @@ import axios from "axios";
 import { SimpleRecordAccordionTable } from "./zones/ZoneRecordTables";
 import { SpinningCog } from "./components/Icons";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
+import { useNotification } from "./components/Alert";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 function Apply() {
   const [data, setData] = useState([]);
@@ -12,6 +15,7 @@ function Apply() {
   const [error, setError] = useState(["", "", ""]);
   const [refresh, setRefresh] = useState(Math.floor(Date.now() / 1000));
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
+  const addNotification = useNotification();
 
   useEffect(() => {
     function handleResize() {
@@ -57,7 +61,7 @@ function Apply() {
     // send post request to backend
     try {
       const response = await axios.post(
-        "https://bind.internal.leejacksonz.com/api/v1/staging",
+        apiUrl + "api/v1/staging",
         {},
         {
           headers: {
@@ -66,10 +70,15 @@ function Apply() {
         }
       );
       console.log(response.data);
+      addNotification("success", response.data.message);
       updateLoading(2, false);
       setRefresh(Math.floor(Date.now() / 1000));
     } catch (error) {
       console.log(error);
+      addNotification(
+        "error",
+        "Failed to apply changes \n" + error.response.data.message
+      );
       updateLoading(2, false);
       updateError(2, error);
     }
@@ -85,7 +94,7 @@ function Apply() {
     // send post request to backend
     try {
       const response = await axios.post(
-        "https://bind.internal.leejacksonz.com/api/v1/deploy",
+        apiUrl + "api/v1/deploy",
         {},
         {
           headers: {
@@ -105,14 +114,11 @@ function Apply() {
   useEffect(() => {
     async function fetchStaging() {
       try {
-        const response = await axios.get(
-          "https://bind.internal.leejacksonz.com/api/v1/staging",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get(apiUrl + "api/v1/staging", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         updateData(0, response.data.data);
         updateLoading(0, false);
       } catch (error) {
@@ -124,14 +130,11 @@ function Apply() {
     async function fetchRender() {
       updateLoading(1, true);
       try {
-        const response = await axios.get(
-          "https://bind.internal.leejacksonz.com/api/v1/render",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get(apiUrl + "api/v1/render", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         updateData(1, response.data.data);
         updateLoading(1, false);
       } catch (error) {
@@ -143,14 +146,11 @@ function Apply() {
     async function fetchDeploy() {
       updateLoading(2, true);
       try {
-        const response = await axios.get(
-          "https://bind.internal.leejacksonz.com/api/v1/deploy",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get(apiUrl + "api/v1/deploy", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         updateData(2, response.data.data);
         updateLoading(2, false);
       } catch (error) {
@@ -167,24 +167,14 @@ function Apply() {
   if (loading[0]) {
     return (
       <Frame location="apply">
+        <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
+        <p class="text-2xl mt-4">Loading...</p>
         <div class="flex items-center justify-center h-1/2">
           {SpinningCog()}
         </div>
       </Frame>
     );
   }
-
-  // if (loading[2]) {
-  //   return (
-  //     <Frame location="apply">
-  //       <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
-  //       <p class="text-2xl mt-4">Applying changes, please wait...</p>
-  //       <div class="flex flex-col items-center justify-center h-1/2">
-  //         {SpinningCog()}
-  //       </div>
-  //     </Frame>
-  //   );
-  // }
 
   if (error[0]) {
     return (

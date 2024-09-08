@@ -42,6 +42,14 @@ export default {
           "inset 1px 1px 4px rgba(255, 255, 255, 1)",
           "0px 2px 6px rgba(0, 0, 0, 0.05)",
         ],
+        ga1: [
+          "inset 0px 0px 10px rgba(255, 255, 255, 1)",
+          "0px 2px 10px rgba(0, 0, 0, 0.05)",
+        ],
+        gah1: [
+          "inset 1px 1px 4px rgba(255, 255, 255, 1)",
+          "3px 6px 20px rgba(0, 0, 0, 0.05)",
+        ],
       },
     },
   },

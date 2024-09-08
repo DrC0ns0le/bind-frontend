@@ -9,7 +9,7 @@ function BigButton1(props) {
 
   return (
     <button
-      class="font-medium py-2 px-4 rounded-[8px] transition ease-in-out mr-5 mt-5 active:scale-95 shadow-gb1 hover:shadow-gba1 w-[350px] h-[100px] text-sm sm:text-xl"
+      class="font-medium py-2 md:px-4 rounded-[8px] transition ease-in-out md:mr-5 mb-5 active:scale-95 shadow-gb1 hover:shadow-gba1 w-[350px] h-[100px] text-xl"
       onClick={() => {
         onClickHandler();
       }}

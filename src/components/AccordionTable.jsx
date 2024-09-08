@@ -15,7 +15,7 @@ export function Accordion(props) {
         onClick={() => setOpen(!open)}
       >
         <div
-          class={`flex flex-col md:flex-row md:items-center p-2 px-3 md:p-[5px] md:px-4 hover:font-semibold ease-in-out duration-200 w-full ${
+          class={`flex flex-col md:flex-row md:items-center p-4 pr-1 md:p-[5px] md:px-4 hover:font-semibold ease-in-out duration-200 w-full ${
             open ? "font-semibold " : ""
           }`}
         >
@@ -23,7 +23,7 @@ export function Accordion(props) {
         </div>
         {disableExpand ? null : (
           <div
-            class={`ml-auto md:px-4 sm:py-0 duration-500 self-center ${
+            class={`ml-auto md:px-4 sm:py-0 duration-500 self-center mr-2 md:mr-0 ${
               open ? "rotate-180" : ""
             }`}
           >

@@ -5,6 +5,8 @@ import axios from "axios";
 import { RecordAccordionTable } from "./ZoneRecordTables";
 import { SpinningCog } from "../components/Icons";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function Zone() {
   const params = useParams();
   const zoneId = params.zone;
@@ -45,14 +47,11 @@ function Zone() {
   useEffect(() => {
     async function fetchZone() {
       try {
-        const response = await axios.get(
-          "https://bind.internal.leejacksonz.com/api/v1/zones/" + zoneId,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get(apiUrl + "api/v1/zones/" + zoneId, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         updateData(0, response.data.data);
         updateLoading(0, false);
       } catch (error) {
@@ -65,9 +64,7 @@ function Zone() {
       updateLoading(1, true);
       try {
         const response = await axios.get(
-          "https://bind.internal.leejacksonz.com/api/v1/zones/" +
-            zoneId +
-            "/records",
+          apiUrl + "api/v1/zones/" + zoneId + "/records",
           {
             headers: {
               "Content-Type": "application/json",
@@ -110,20 +107,20 @@ function Zone() {
 
   return (
     <Frame location="zones">
-      <div class="overflow-visible">
-        <p class="text-xl font-black tracking-tight">ZONE</p>
-        <h1 class="text-3xl sm:text-8xl sm:h-28 font-black tracking-tight text-wrap overflow-scroll">
+      <div>
+        <p class="text-2xl font-black tracking-tight">ZONE</p>
+        <h1 class="text-[80px] sm:text-8xl pb-4 font-black tracking-tight text-wrap overflow-scroll">
           {data[0].name}
         </h1>
       </div>
 
-      <div class="flex-wrap sm:gap-4 mt-12 min-w-[340px]">
+      {/* <div class="flex-wrap sm:gap-4 mt-4 min-w-[340px]">
         <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
           ZONE DETAILS:
         </p>
         <div class="flex flex-col gap-2"></div>
       </div>
-      <hr class="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+      <hr class="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" /> */}
       <div class="flex-wrap sm:gap-4 mt-12 min-w-[340px]">
         <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
           ZONE RECORDS:

@@ -13,13 +13,13 @@ function Frame(props) {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      stroke-width="1.5"
+      strokeWidth="1.5"
       stroke="currentColor"
       class="w-8 h-8"
     >
       <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
       />
     </svg>
@@ -40,8 +40,8 @@ function Frame(props) {
             <button class="pb-4" onClick={() => setShowSidebar(!showSidebar)}>
               {nav_hamburger}
             </button>
-            <div class="grow">{props.children}</div>
 
+            <div class="grow">{props.children}</div>
             <footer class="text-xs sm:text-sm text-gray-600 text-center font-light self-center py-1 sm:py-4 sm:pt-8">
               Copyright © 2024 Lee Jack Sonz. All rights reserved.
             </footer>
