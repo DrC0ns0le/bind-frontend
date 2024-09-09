@@ -40,9 +40,11 @@ function Zones() {
         <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Zones</h1>
         <p class="text-2xl mt-4">Select a zone:</p>
       </div>
-      <div class="flex flex-col sm:flex-row flex-wrap items-center md:items-stretch gap-4 mt-12">
+      <div class="flex sm:flex-row flex-wrap items-center md:items-stretch gap-4 mt-12">
         {loading ? (
-          <div class="flex justify-center scale-150 mt-32">{SpinningCog}</div>
+          <div class="flex w-full flex-row justify-center scale-150 mt-8">
+            {SpinningCog()}
+          </div>
         ) : error ? (
           <p>Error! {error.message}</p>
         ) : (
