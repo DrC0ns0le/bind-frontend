@@ -20,6 +20,7 @@ function Zone() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [prevSearchQuery, setPrevSearchQuery] = useState("");
 
   const updateData = (key, data) => {
     setData((prevData) => {
@@ -105,12 +106,13 @@ function Zone() {
 
   // Separate effect for fetching records
   useEffect(() => {
-    // If search query changes, use debounced fetch
-    if (searchQuery !== "") {
+    // use debounced fetch
+    if (searchQuery !== prevSearchQuery) {
+      setPrevSearchQuery(searchQuery);
       debouncedFetchRecords();
     }
-    // For initial load, refresh, or empty search, fetch immediately
-    else if (currentPage === 1 || refresh) {
+    // fetch immediately
+    else {
       fetchRecords();
     }
 
