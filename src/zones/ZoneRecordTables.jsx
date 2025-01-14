@@ -19,7 +19,6 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 export function RecordAccordionTable(props) {
   const [allRecords, setAllRecords] = useState(props.rows);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
   const addNotification = useNotification();
 
@@ -177,11 +176,6 @@ export function RecordAccordionTable(props) {
       </Combobox>
     );
   }
-
-  // function for fuzzy search filtering
-  const handleQueryChange = (query) => {
-    setSearchQuery(query);
-  };
 
   const recordForm = (record) => {
     const handleSubmit = async (e, record) => {
@@ -384,8 +378,11 @@ export function RecordAccordionTable(props) {
             type="text"
             name="host"
             id="host"
+            value={props.searchQuery}
             class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
-            onChange={(e) => handleQueryChange(e.target.value)}
+            onChange={(e) => {
+              props.setSearchQuery(e.target.value);
+            }}
           />
         </div>
         <button
@@ -423,74 +420,63 @@ export function RecordAccordionTable(props) {
       )}
       <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-y-clip">
         {allRecords != null &&
-          allRecords.map(
-            (
-              record // fuzzy filter
-            ) =>
-              !searchQuery.trim() ||
-              record.uuid.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              record.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              record.host.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              record.content
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase()) ? (
-                <Accordion
-                  additionalClass={`${
-                    record.staging
-                      ? record.deleted_at == 0
-                        ? record.created_at == record.modified_at
-                          ? "bg-green-200"
-                          : "bg-slate-200"
-                        : "bg-red-200"
-                      : ""
-                  }`}
-                  key={record.uuid + "accordion"}
-                >
-                  {isLargeScreen ? (
-                    record.uuid != "new" ? (
-                      <AccordionTitle key={record.uuid + "title"}>
-                        {Object.entries(headers).map(([header, className]) => (
-                          <div
-                            key={record.uuid + header + "key"}
-                            class={`font-mono ${className}`}
-                          >
-                            {record[header.toLowerCase()]}
-                          </div>
-                        ))}
-                      </AccordionTitle>
-                    ) : (
-                      <AccordionTitle>
-                        <p>New Record</p>
-                      </AccordionTitle>
-                    )
-                  ) : record.uuid != "new" ? (
-                    <AccordionTitle key={record.uuid + "title"}>
-                      {Object.entries(headers).map(([header, _]) => (
-                        <div class="flex flex-row" key={record.uuid + header}>
-                          <div
-                            key={record.uuid + header + "key"}
-                            class={`font-mono min-w-20 text-left pr-2 tracking-tighter`}
-                          >
-                            {header + ":"}
-                          </div>
-                          <div
-                            key={record.uuid + header + "value"}
-                            class={`font-mono text-wrap break-all tracking-tight`}
-                          >
-                            {record[header.toLowerCase()]}
-                          </div>
-                        </div>
-                      ))}
-                    </AccordionTitle>
-                  ) : (
-                    <AccordionTitle>
-                      <p>New Record</p>
-                    </AccordionTitle>
-                  )}
-                  <AccordionContent>{recordForm(record)}</AccordionContent>
-                </Accordion>
-              ) : null
-          )}
+          allRecords.map((record) => (
+            <Accordion
+              additionalClass={`${
+                record.staging
+                  ? record.deleted_at == 0
+                    ? record.created_at == record.modified_at
+                      ? "bg-green-200"
+                      : "bg-slate-200"
+                    : "bg-red-200"
+                  : ""
+              }`}
+              key={record.uuid + "accordion"}
+            >
+              {isLargeScreen ? (
+                record.uuid != "new" ? (
+                  <AccordionTitle key={record.uuid + "title"}>
+                    {Object.entries(headers).map(([header, className]) => (
+                      <div
+                        key={record.uuid + header + "key"}
+                        class={`font-mono ${className}`}
+                      >
+                        {record[header.toLowerCase()]}
+                      </div>
+                    ))}
+                  </AccordionTitle>
+                ) : (
+                  <AccordionTitle>
+                    <p>New Record</p>
+                  </AccordionTitle>
+                )
+              ) : record.uuid != "new" ? (
+                <AccordionTitle key={record.uuid + "title"}>
+                  {Object.entries(headers).map(([header, _]) => (
+                    <div class="flex flex-row" key={record.uuid + header}>
+                      <div
+                        key={record.uuid + header + "key"}
+                        class={`font-mono min-w-20 text-left pr-2 tracking-tighter`}
+                      >
+                        {header + ":"}
+                      </div>
+                      <div
+                        key={record.uuid + header + "value"}
+                        class={`font-mono text-wrap break-all tracking-tight`}
+                      >
+                        {record[header.toLowerCase()]}
+                      </div>
+                    </div>
+                  ))}
+                </AccordionTitle>
+              ) : (
+                <AccordionTitle>
+                  <p>New Record</p>
+                </AccordionTitle>
+              )}
+              <AccordionContent>{recordForm(record)}</AccordionContent>
+            </Accordion>
+          ))}
       </div>
     </div>
   );

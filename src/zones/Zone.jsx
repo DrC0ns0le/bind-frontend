@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Frame from "../components/Frame";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { RecordAccordionTable } from "./ZoneRecordTables";
 import { SpinningCog } from "../components/Icons";
+import PaginationControls from "../components/PaginationControls";
+import _ from "lodash";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -15,6 +17,9 @@ function Zone() {
   const [loading, setLoading] = useState([true, true]);
   const [error, setError] = useState([false, false]);
   const [refresh, setRefresh] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const updateData = (key, data) => {
     setData((prevData) => {
@@ -44,6 +49,41 @@ function Zone() {
     });
   };
 
+  // Memoize fetchRecords to prevent recreation on every render
+  const fetchRecords = useCallback(async () => {
+    updateLoading(1, true);
+    try {
+      const response = await axios.get(
+        `${apiUrl}api/v1/zones/${zoneId}/records?page=${currentPage}&search=${searchQuery}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      updateData(1, response.data.data);
+      setPagination(response.data.data.pagination || null);
+      updateLoading(1, false);
+    } catch (error) {
+      updateError(1, error);
+      updateLoading(1, false);
+    }
+  }, [zoneId, currentPage, searchQuery]);
+
+  // Create debounced version of fetchRecords
+  const debouncedFetchRecords = useMemo(
+    () => _.debounce(() => fetchRecords(), 500),
+    [fetchRecords]
+  );
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedFetchRecords.cancel();
+    };
+  }, [debouncedFetchRecords]);
+
+  // Effect for fetching zone data
   useEffect(() => {
     async function fetchZone() {
       try {
@@ -60,33 +100,34 @@ function Zone() {
       }
     }
 
-    async function fetchRecords() {
-      updateLoading(1, true);
-      try {
-        const response = await axios.get(
-          apiUrl + "api/v1/zones/" + zoneId + "/records",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        updateData(1, response.data.data);
-        updateLoading(1, false);
-      } catch (error) {
-        updateError(1, error);
-        updateLoading(1, false);
-      }
+    fetchZone();
+  }, [zoneId]);
+
+  // Separate effect for fetching records
+  useEffect(() => {
+    // If search query changes, use debounced fetch
+    if (searchQuery !== "") {
+      debouncedFetchRecords();
+    }
+    // For initial load, refresh, or empty search, fetch immediately
+    else if (currentPage === 1 || refresh) {
+      fetchRecords();
     }
 
-    fetchZone();
-    fetchRecords();
-  }, [refresh]);
+    // Reset refresh flag after fetching
+    if (refresh) {
+      setRefresh(false);
+    }
+  }, [refresh, searchQuery, currentPage, fetchRecords, debouncedFetchRecords]);
+
+  const handlePageChange = (newPage, pageSize) => {
+    setCurrentPage(newPage);
+  };
 
   if (loading[0]) {
     return (
       <Frame location="zones">
-        <div class="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-screen">
           {SpinningCog()}
         </div>
       </Frame>
@@ -96,7 +137,7 @@ function Zone() {
   if (error[0]) {
     return (
       <Frame location="zones">
-        <div class="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-screen">
           <p>Error: {error[0].message}</p>
           <p>---</p>
           <p>{error[0].response.data.message}</p>
@@ -108,29 +149,22 @@ function Zone() {
   return (
     <Frame location="zones">
       <div>
-        <p class="text-2xl font-black tracking-tight">ZONE</p>
-        <h1 class="text-[80px] sm:text-8xl pb-4 font-black tracking-tight text-wrap overflow-scroll">
-          {data[0].name}
+        <p className="text-2xl font-black tracking-tight">ZONE</p>
+        <h1 className="text-[80px] sm:text-8xl pb-4 font-black tracking-tight text-wrap overflow-scroll">
+          {data[0]?.name}
         </h1>
       </div>
 
-      {/* <div class="flex-wrap sm:gap-4 mt-4 min-w-[340px]">
-        <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
-          ZONE DETAILS:
-        </p>
-        <div class="flex flex-col gap-2"></div>
-      </div>
-      <hr class="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" /> */}
-      <div class="flex-wrap sm:gap-4 mt-12 min-w-[340px]">
-        <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
+      <div className="flex-wrap sm:gap-4 mt-12 min-w-[340px]">
+        <p className="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
           ZONE RECORDS:
         </p>
         {loading[1] ? (
-          <div class="flex justify-center">{SpinningCog()}</div>
+          <div className="flex justify-center">{SpinningCog()}</div>
         ) : error[1] ? (
-          <div class="flex flex-col items-center justify-center pt-8">
+          <div className="flex flex-col items-center justify-center pt-8">
             <p>Error: Failed to fetch records</p>
-            <p class="p-2">---</p>
+            <p className="p-2">---</p>
             <p>
               {error[1].response.status}: {error[1].response.data.message}
             </p>
@@ -138,12 +172,22 @@ function Zone() {
         ) : (
           <>
             <RecordAccordionTable
-              rows={data[1]}
-              key={zoneId}
+              rows={data[1]?.records || []}
+              key={`${zoneId}-${currentPage}`}
               zoneId={zoneId}
               refresh={refresh}
               setRefresh={setRefresh}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
             />
+            {pagination && (
+              <div className="flex justify-center pt-4">
+                <PaginationControls
+                  pagination={pagination}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
           </>
         )}
       </div>
