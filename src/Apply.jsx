@@ -12,7 +12,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 function Apply() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState([true, true, false]);
-  const [error, setError] = useState(["", "", ""]);
+  const [error, setError] = useState(["", "", "", ""]);
   const [refresh, setRefresh] = useState(Math.floor(Date.now() / 1000));
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
   const addNotification = useNotification();
@@ -81,6 +81,7 @@ function Apply() {
       );
       updateLoading(2, false);
       updateError(2, error);
+      setRefresh(Math.floor(Date.now() / 1000));
     }
   };
 
@@ -107,6 +108,7 @@ function Apply() {
     } catch (error) {
       console.log(error);
       updateLoading(3, false);
+      updateData(3, error.response.data.data);
       updateError(3, error);
     }
   };
@@ -194,7 +196,7 @@ function Apply() {
         <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
         {data[0].records !== null ? (
           <p class="text-2xl mt-4">
-            {"There is " +
+            {"There's " +
               data[0].records.length +
               (data[0].records.length === 1 ? " record" : " records") +
               " in staging pending to be applied."}
@@ -205,6 +207,8 @@ function Apply() {
           <p class="text-2xl mt-4">Committing changes, please wait...</p>
         ) : loading[3] ? (
           <p class="text-2xl mt-4">Applying changes, please wait...</p>
+        ) : error[3] !== "" ? (
+          <p class="text-2xl mt-4">Failed to apply changes.</p>
         ) : (
           <p class="text-2xl mt-4">All changes have been applied.</p>
         )}
@@ -215,6 +219,7 @@ function Apply() {
         {loading[1] ? (
           <div class="flex justify-center h-1/2">{SpinningCog()}</div>
         ) : data[0].records !== null ? (
+          // if there are records, show commit UI
           <>
             <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
               RECORDS:
