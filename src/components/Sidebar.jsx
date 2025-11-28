@@ -10,12 +10,12 @@ function Sidebar(props) {
   ];
 
   return (
-    <nav class="h-screen flex justify-end items-center">
-      <ul class="flex flex-col text-lg gap-6 text-center" key={"primary nav"}>
+    <nav className="h-screen flex justify-end items-center">
+      <ul className="flex flex-col text-lg gap-6 text-center" key={"primary nav"}>
         {options.map((item) => (
           <li key={item.text}>
             <a
-              class={`hover:drop-shadow-4xl md:text-xl ease-in-out duration-200 drop-shadow-ps1 capitalize active:text-lg ${
+              className={`hover:drop-shadow-4xl md:text-xl transition-smooth drop-shadow-ps1 capitalize active:text-lg ${
                 location === item.text ? "font-bold" : ""
               }`}
               key={item.text}

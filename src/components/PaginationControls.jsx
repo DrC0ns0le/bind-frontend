@@ -38,7 +38,7 @@ export const PaginationControls = ({ pagination, onPageChange }) => {
   );
 
   const baseButtonStyles =
-    "rounded-md outline outline-[1px] outline-gray-300 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 active:scale-95 cursor-pointer";
+    "rounded-md outline outline-[1px] outline-gray-300 shadow-gb2 hover:shadow-gba2 transition-smooth active-scale cursor-pointer";
   const numberButtonStyles = "w-8 h-8 flex items-center justify-center";
   const navButtonStyles = "px-4 h-8 flex items-center justify-center";
 

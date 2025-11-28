@@ -11,7 +11,10 @@ import {
   AccordionTitle,
   AccordionContent,
   AccordionTable,
+  TableHeader,
 } from "../components/AccordionTable";
+import { PrimaryButton, DangerButton, IconButton } from "../components/Buttons";
+import { TextInput, NumberInput, TextArea } from "../components/FormInputs";
 import axios from "axios";
 import { useNotification } from "../components/Alert";
 
@@ -115,7 +118,7 @@ export function RecordAccordionTable(props) {
         // id={record.uuid + "type"}
         name={record.uuid + "type"}
       >
-        <div class="flex flex-row w-full px-3 pr-1 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 md:text-sm md:leading-6">
+        <div className="flex flex-row w-full px-3 pr-1 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 transition-smooth ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 md:text-sm md:leading-6">
           <Combobox.Input
             onChange={(event) => {
               setQuery((prevQuery) => {
@@ -125,7 +128,7 @@ export function RecordAccordionTable(props) {
               });
             }}
             displayValue={(recordType) => recordType}
-            class="w-full outline-none font-mono"
+            className="w-full outline-none font-mono"
             name={record.uuid + "type"}
             id={record.uuid + "type"}
           />
@@ -160,7 +163,7 @@ export function RecordAccordionTable(props) {
               >
                 {({ active, selected }) => (
                   <li
-                    className={`p-1 pl-3 ease-in-out duration-300 ${
+                    className={`p-1 pl-3 transition-smooth ${
                       active || selected
                         ? "font-bold text-black"
                         : "bg-white text-black"
@@ -265,60 +268,56 @@ export function RecordAccordionTable(props) {
 
     return (
       <>
-        <form onSubmit={(e) => handleSubmit(e, record)} class="px-3">
-          <div class="flex flex-col md:flex-row p-2 place-content-between">
-            <div class="flex flex-col w-[30%] md:w-[10%]">
+        <form onSubmit={(e) => handleSubmit(e, record)} className="px-3">
+          <div className="flex flex-col md:flex-row p-2 place-content-between">
+            <div className="flex flex-col w-[30%] md:w-[10%]">
               <label
                 htmlFor={record.uuid + "type"}
-                class="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1"
               >
                 Type:
               </label>
               {recordsTypeComboBox(record)}
             </div>
-            <div class="flex flex-col md:w-[30%]">
+            <div className="flex flex-col md:w-[30%]">
               <label
                 htmlFor={record.uuid + "host"}
-                class="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1"
               >
                 Hostname:
               </label>
-              <input
-                type="text"
+              <TextInput
                 name={record.uuid + "host"}
                 id={record.uuid + "host"}
                 defaultValue={record.host}
                 placeholder="ubuntu-prod-01.oci"
                 required
-                class="font-mono block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
               />
             </div>
-            <div class="flex flex-col md:w-[45%]">
+            <div className="flex flex-col md:w-[45%]">
               <label
                 htmlFor={record.uuid + "content"}
-                class="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1"
               >
                 Content:
               </label>
-              <textarea
-                type="text"
+              <TextArea
                 name={record.uuid + "content"}
                 id={record.uuid + "content"}
                 defaultValue={record.content}
                 placeholder="89.0.142.86"
                 required
-                class="font-mono w-full h-[128px] touch:h-[128px] md:h-[36px] min-h-9 block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none resize-y md:text-sm md:leading-6"
+                className="w-full h-[128px] touch:h-[128px] md:h-[36px] min-h-9 resize-y"
               />
             </div>
-            <div class="flex flex-col w-[40%] md:w-[10%]">
+            <div className="flex flex-col w-[40%] md:w-[10%]">
               <label
                 htmlFor={record.uuid + "ttl"}
-                class="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1"
               >
                 TTL:
               </label>
-              <input
-                type="number"
+              <NumberInput
                 step="1"
                 pattern="\d+"
                 name={record.uuid + "ttl"}
@@ -326,41 +325,35 @@ export function RecordAccordionTable(props) {
                 defaultValue={record.ttl}
                 placeholder="3600"
                 required
-                class="font-mono w-full block px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
+                className="w-full"
               />
             </div>
           </div>
           {(selectedType[record.uuid] === "A" ||
             selectedType[record.uuid] === "AAAA") && (
-            <div class="flex flex-row items-center pl-2">
+            <div className="flex flex-row items-center pl-2">
               <input
                 type="checkbox"
                 name={record.uuid + "add_ptr"}
                 id={record.uuid + "add_ptr"}
                 defaultChecked={record.add_ptr}
-                class="w-4 h-4 checked:bg-gray-800 border-gray-900"
+                className="w-4 h-4 checked:bg-gray-800 border-gray-900"
               />
-              <label htmlFor={record.uuid + "add_ptr"} class="p-1 text-sm">
+              <label htmlFor={record.uuid + "add_ptr"} className="p-1 text-sm">
                 Add Reverse DNS (PTR)
               </label>
             </div>
           )}
-          <div class="flex flex-row p-2 pb-3 place-content-between">
-            <div
-              onClick={(e) => handleDelete(record.uuid)}
-              class="rounded-md self-center outline outline-[1px] outline-[#b92424] px-2.5 py-1.5 text-sm text-[#b92424] shadow-gb2 hover:shadow-gba2 hover:text-white hover:bg-[#b92424] ease-in-out duration-300 active:scale-95 w-[86px] h-[32px] text-center cursor-pointer"
-            >
+          <div className="flex flex-row p-2 pb-3 place-content-between">
+            <DangerButton onClick={(e) => handleDelete(record.uuid)}>
               Delete
-            </div>
-            <p class="pl-2 md:pb-1 self-end text-gray-500 text-[12px] border-none grow ">
+            </DangerButton>
+            <p className="pl-2 md:pb-1 self-end text-gray-500 text-[12px] border-none grow ">
               {record.uuid !== "new" ? `UUID: ${record.uuid}` : ""}
             </p>
-            <button
-              type="submit"
-              class="rounded-md self-center bg-[#373737] px-4 py-2 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 active:scale-95 place-self-end"
-            >
+            <PrimaryButton type="submit" className="place-self-end">
               Submit
-            </button>
+            </PrimaryButton>
           </div>
         </form>
       </>
@@ -368,57 +361,52 @@ export function RecordAccordionTable(props) {
   };
 
   return (
-    <div class="flex flex-col">
-      <div class="flex flex-row p-2 pb-3">
-        <div class="flex flex-row w-[30%] items-center">
-          <label htmlFor="host" class="z-10 relative left-3 text-sm w-0">
+    <div className="flex flex-col">
+      <div className="flex flex-row p-2 pb-3">
+        <div className="flex flex-row w-[30%] items-center">
+          <label htmlFor="host" className="z-10 relative left-3 text-sm w-0">
             Search:{" "}
           </label>
-          <input
-            type="text"
+          <TextInput
             name="host"
             id="host"
             value={props.searchQuery}
-            class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
+            className="z-0 pl-[64px] pr-2"
             onChange={(e) => {
               props.setSearchQuery(e.target.value);
             }}
           />
         </div>
-        <button
-          class={
-            "rounded-md bg-[#373737] ml-auto mx-4 px-1.5 py-1 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 justify-self-end"
-          }
+        <IconButton
+          className="ml-auto mx-4 bg-primary text-white hover:bg-primary-hover shadow-gb2 hover:shadow-gba2"
           onClick={() => setRefresh(Math.floor(Date.now() / 1000))}
         >
           <RefreshIcon additionalClass="scale-75" />
-        </button>
-        <button
-          class={
-            "rounded-md bg-[#373737] px-1.5 py-1 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 justify-self-end"
-          }
+        </IconButton>
+        <IconButton
+          className="bg-primary text-white hover:bg-primary-hover shadow-gb2 hover:shadow-gba2"
           onClick={addNewRecord}
         >
           <PlusIcon additionalClass="scale-75" />
-        </button>
+        </IconButton>
       </div>
       {isLargeScreen ? (
-        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 pr-[72px] ">
+        <TableHeader className="pr-[72px]">
           {Object.entries(headers).map(([header, className]) => (
             <div
               key={header}
-              class={`${className} font-semibold font-mono tracking-tight text-md`}
+              className={`${className} font-semibold font-mono tracking-tight text-md`}
             >
               {header}
             </div>
           ))}
-        </div>
+        </TableHeader>
       ) : (
-        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
+        <TableHeader>
           Zone Records
-        </div>
+        </TableHeader>
       )}
-      <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-y-clip">
+      <div className="outline outline-1 outline-gray-200 translate-y-[1px] overflow-y-clip">
         {allRecords != null &&
           allRecords.map((record) => (
             <Accordion
@@ -439,7 +427,7 @@ export function RecordAccordionTable(props) {
                     {Object.entries(headers).map(([header, className]) => (
                       <div
                         key={record.uuid + header + "key"}
-                        class={`font-mono ${className}`}
+                        className={`font-mono ${className}`}
                       >
                         {record[header.toLowerCase()]}
                       </div>
@@ -453,16 +441,16 @@ export function RecordAccordionTable(props) {
               ) : record.uuid != "new" ? (
                 <AccordionTitle key={record.uuid + "title"}>
                   {Object.entries(headers).map(([header, _]) => (
-                    <div class="flex flex-row" key={record.uuid + header}>
+                    <div className="flex flex-row" key={record.uuid + header}>
                       <div
                         key={record.uuid + header + "key"}
-                        class={`font-mono min-w-20 text-left pr-2 tracking-tighter`}
+                        className={`font-mono min-w-20 text-left pr-2 tracking-tighter`}
                       >
                         {header + ":"}
                       </div>
                       <div
                         key={record.uuid + header + "value"}
-                        class={`font-mono text-wrap break-all tracking-tight`}
+                        className={`font-mono text-wrap break-all tracking-tight`}
                       >
                         {record[header.toLowerCase()]}
                       </div>
@@ -513,46 +501,43 @@ export function SimpleRecordAccordionTable(props) {
   };
 
   return (
-    <div class="flex flex-col">
-      <div class="flex flex-row p-2 pb-3">
-        <div class="flex flex-row w-[30%] items-center">
-          <label htmlFor="host" class="z-10 relative left-3 text-sm w-0">
+    <div className="flex flex-col">
+      <div className="flex flex-row p-2 pb-3">
+        <div className="flex flex-row w-[30%] items-center">
+          <label htmlFor="host" className="z-10 relative left-3 text-sm w-0">
             Search:{" "}
           </label>
-          <input
-            type="text"
+          <TextInput
             name="host"
             id="host"
-            class="z-0 block pl-[64px] pr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 ease-in-out duration-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none md:text-sm md:leading-6"
+            className="z-0 pl-[64px] pr-2"
           />
         </div>
-        <button
-          class={
-            "rounded-md bg-[#373737] ml-auto mx-4 px-1.5 py-1 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 justify-self-end"
-          }
+        <IconButton
+          className="ml-auto mx-4 bg-primary text-white hover:bg-primary-hover shadow-gb2 hover:shadow-gba2"
           onClick={() => setRefresh(Math.floor(Date.now() / 1000))}
         >
           <RefreshIcon additionalClass="scale-75" />
-        </button>
+        </IconButton>
       </div>
       {isLargeScreen ? (
-        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
+        <TableHeader>
           {Object.entries(headers).map(([header, className]) => (
             <div
               key={header}
-              class={`${className} font-semibold font-mono tracking-tight text-md`}
+              className={`${className} font-semibold font-mono tracking-tight text-md`}
             >
               {header}
             </div>
           ))}
-        </div>
+        </TableHeader>
       ) : (
-        <div class="flex flex-row flex-nowrap rounded-t-[8px] outline outline-1 outline-gray-200 py-2 px-4 ">
+        <TableHeader>
           Staging Records
-        </div>
+        </TableHeader>
       )}
       {
-        <div class="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
+        <div className="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
           {props.rows.map((record) => (
             <Accordion
               additionalClass={`${
@@ -573,7 +558,7 @@ export function SimpleRecordAccordionTable(props) {
                     isLargeScreen ? (
                       <div
                         key={record[header.toLowerCase]}
-                        class={`font-mono ${className}`}
+                        className={`font-mono ${className}`}
                       >
                         {record[header.toLowerCase()]}
                       </div>
@@ -581,13 +566,13 @@ export function SimpleRecordAccordionTable(props) {
                       <>
                         <div
                           key={record.uuid + header + "header"}
-                          class={`font-semibold uppercase pt-2 text-xs tracking-wide`}
+                          className={`font-semibold uppercase pt-2 text-xs tracking-wide`}
                         >
                           {header}
                         </div>
                         <div
                           key={record.uuid + header + "value"}
-                          class={`font-mono text-wrap break-all tracking-tight`}
+                          className={`font-mono text-wrap break-all tracking-tight`}
                         >
                           {record[header.toLowerCase()]}
                         </div>

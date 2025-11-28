@@ -6,6 +6,8 @@ import { SimpleRecordAccordionTable } from "./zones/ZoneRecordTables";
 import { SpinningCog } from "./components/Icons";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import { useNotification } from "./components/Alert";
+import { PrimaryButton } from "./components/Buttons";
+import { PageHeading, Subheading, SectionLabel } from "./components/Typography";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -169,9 +171,9 @@ function Apply() {
   if (loading[0]) {
     return (
       <Frame location="apply">
-        <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
-        <p class="text-2xl mt-4">Loading...</p>
-        <div class="flex items-center justify-center h-1/2">
+        <PageHeading>Apply</PageHeading>
+        <Subheading>Loading...</Subheading>
+        <div className="flex items-center justify-center h-1/2">
           {SpinningCog()}
         </div>
       </Frame>
@@ -181,7 +183,7 @@ function Apply() {
   if (error[0]) {
     return (
       <Frame location="apply">
-        <div class="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-screen">
           <p>Error: {error[0].message}</p>
         </div>
       </Frame>
@@ -190,65 +192,59 @@ function Apply() {
 
   return (
     <Frame location="apply">
-      <div class="overflow-visible">
-        {/* <p class="text-xl font-black tracking-tight">APPLY</p>
-        <h1 class="text-3xl sm:text-8xl sm:h-28 font-black tracking-tight text-wrap overflow-scroll"></h1> */}
-        <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Apply</h1>
+      <div className="overflow-visible">
+        <PageHeading>Apply</PageHeading>
         {data[0].records !== null ? (
-          <p class="text-2xl mt-4">
+          <Subheading>
             {"There's " +
               data[0].records.length +
               (data[0].records.length === 1 ? " record" : " records") +
               " in staging pending to be applied."}
-          </p>
+          </Subheading>
         ) : data[2] ? (
-          <p class="text-2xl mt-4">Ready to deploy the new configuration.</p>
+          <Subheading>Ready to deploy the new configuration.</Subheading>
         ) : loading[2] ? (
-          <p class="text-2xl mt-4">Committing changes, please wait...</p>
+          <Subheading>Committing changes, please wait...</Subheading>
         ) : loading[3] ? (
-          <p class="text-2xl mt-4">Applying changes, please wait...</p>
+          <Subheading>Applying changes, please wait...</Subheading>
         ) : error[3] !== "" ? (
-          <p class="text-2xl mt-4">Failed to apply changes.</p>
+          <Subheading>Failed to apply changes.</Subheading>
         ) : (
-          <p class="text-2xl mt-4">All changes have been applied.</p>
+          <Subheading>All changes have been applied.</Subheading>
         )}
       </div>
 
-      <div class="flex-wrap gap-4 mt-12 min-w-[340px]">
+      <div className="flex-wrap gap-4 mt-12 min-w-[340px]">
         {/* Staging */}
         {loading[1] ? (
-          <div class="flex justify-center h-1/2">{SpinningCog()}</div>
+          <div className="flex justify-center h-1/2">{SpinningCog()}</div>
         ) : data[0].records !== null ? (
           // if there are records, show commit UI
           <>
-            <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
-              RECORDS:
-            </p>
+            <SectionLabel>RECORDS:</SectionLabel>
             <SimpleRecordAccordionTable
               rows={data[0].records}
               key="apply"
               refresh={refresh}
               setRefresh={setRefresh}
             />
-            <div class="flex flex-row place-content-end">
-              <button
+            <div className="flex flex-row place-content-end">
+              <PrimaryButton
                 type="submit"
-                class="rounded-md bg-[#373737] mt-8 mr-2 px-4 py-2 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 active:scale-95 place-self-end"
+                className="mt-8 mr-2 place-self-end"
                 onClick={(e) => {
                   e.preventDefault();
                   handleApply();
                 }}
               >
                 Apply
-              </button>
+              </PrimaryButton>
             </div>
-            <div class="flex flex-col place-content-end">
-              <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
-                PREVIEW:
-              </p>
+            <div className="flex flex-col place-content-end">
+              <SectionLabel>PREVIEW:</SectionLabel>
               {Object.entries(data[1].before).map((file, content) => (
                 <>
-                  <p class="font-mono text-xs md:text-sm tracking-tighter font-black pb-4 pl-2 text-[#343434] break-words">
+                  <p className="font-mono text-xs md:text-sm tracking-tighter font-black pb-4 pl-2 text-primary break-words">
                     {file[0]}
                   </p>
 
@@ -264,7 +260,7 @@ function Apply() {
                       renderSideBySide: isLargeScreen,
                     }}
                   />
-                  <hr class="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+                  <hr className="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
                 </>
               ))}
             </div>
@@ -274,20 +270,20 @@ function Apply() {
         )}
         {/* Deployment */}
         {loading[2] ? (
-          <div class="flex justify-center h-1/2">{SpinningCog()}</div>
+          <div className="flex justify-center h-1/2">{SpinningCog()}</div>
         ) : data[2] ? (
           <div>
-            <div class="flex flex-row place-content-end">
-              <button
+            <div className="flex flex-row place-content-end">
+              <PrimaryButton
                 type="submit"
-                class="rounded-md bg-[#373737] mt-8 mr-2 px-4 py-2 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-[#343434] ease-in-out duration-300 active:scale-95 place-self-end"
+                className="mt-8 mr-2 place-self-end"
                 onClick={(e) => {
                   e.preventDefault();
                   handleDeploy();
                 }}
               >
                 Deploy
-              </button>
+              </PrimaryButton>
             </div>
           </div>
         ) : (
@@ -295,12 +291,10 @@ function Apply() {
         )}
         {/* Deployment Outcome */}
         {loading[3] ? (
-          <div class="flex justify-center h-1/2">{SpinningCog()}</div>
+          <div className="flex justify-center h-1/2">{SpinningCog()}</div>
         ) : data[3] ? (
           <>
-            <p class="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
-              Deployment Outcome:
-            </p>
+            <SectionLabel>Deployment Outcome:</SectionLabel>
             <Editor
               theme="vs-light"
               height="400px"

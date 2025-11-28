@@ -1,12 +1,13 @@
 import Frame from "./components/Frame";
+import { PageHeading, Subheading } from "./components/Typography";
 
 function Home() {
   return (
     <Frame location="home">
       <>
         <div>
-          <h1 class="text-6xl sm:text-8xl font-black tracking-tight">Home</h1>
-          <p class="text-2xl mt-4">DNS Management Web Management</p>
+          <PageHeading>Home</PageHeading>
+          <Subheading>DNS Management Web Management</Subheading>
         </div>
       </>
     </Frame>

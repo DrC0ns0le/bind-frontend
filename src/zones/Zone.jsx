@@ -5,6 +5,7 @@ import axios from "axios";
 import { RecordAccordionTable } from "./ZoneRecordTables";
 import { SpinningCog } from "../components/Icons";
 import PaginationControls from "../components/PaginationControls";
+import { PageHeading, SectionLabel } from "../components/Typography";
 import _ from "lodash";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -152,15 +153,13 @@ function Zone() {
     <Frame location="zones">
       <div>
         <p className="text-2xl font-black tracking-tight">ZONE</p>
-        <h1 className="text-[80px] sm:text-8xl pb-4 font-black tracking-tight text-wrap overflow-scroll">
+        <PageHeading className="text-[80px] pb-4 text-wrap overflow-scroll">
           {data[0]?.name}
-        </h1>
+        </PageHeading>
       </div>
 
       <div className="flex-wrap sm:gap-4 mt-12 min-w-[340px]">
-        <p className="font-mono text-xl font-black p-2 pl-2 text-[#343434] tracking-tight">
-          ZONE RECORDS:
-        </p>
+        <SectionLabel>ZONE RECORDS:</SectionLabel>
         {loading[1] ? (
           <div className="flex justify-center">{SpinningCog()}</div>
         ) : error[1] ? (

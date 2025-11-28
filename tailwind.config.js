@@ -8,6 +8,15 @@ export default {
       serif: ["IBM Plex Serif", "serif"],
     },
     extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#373737',
+          hover: '#343434',
+        },
+        danger: {
+          DEFAULT: '#b92424',
+        },
+      },
       dropShadow: {
         "3xl": "0 35px 35px rgba(0, 0, 0, 0.25)",
         "4xl": [
@@ -53,5 +62,18 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addUtilities }) {
+      addUtilities({
+        '.transition-smooth': {
+          transition: 'all 300ms ease-in-out',
+        },
+        '.active-scale': {
+          '&:active': {
+            transform: 'scale(0.95)',
+          },
+        },
+      })
+    }
+  ],
 };
