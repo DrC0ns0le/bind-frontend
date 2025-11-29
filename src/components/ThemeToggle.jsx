@@ -41,7 +41,7 @@ export const ThemeToggle = ({ className = '' }) => {
   return (
     <button
       onClick={toggleTheme}
-      className={`transition-smooth active-scale text-gray-900 dark:text-gray-300 ${className}`}
+      className={`transition-smooth text-gray-900 dark:text-gray-300 hover-scale ${className}`}
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDarkMode ? <SunIcon /> : <MoonIcon />}

@@ -2,23 +2,23 @@ import React from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
 function Sidebar(props) {
-  const { location, isExpanded = false, onToggle } = props;
+  const { location, isExpanded = false, isPinned = false, onToggle } = props;
   const hamburgerPosRef = React.useRef(null);
   const [isReady, setIsReady] = React.useState(false);
 
-  const nav_hamburger = (
+  const toggleIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="w-6 h-6"
+      className={`w-6 h-6 transition-transform duration-300 ${isPinned ? '' : 'scale-x-[-1]'}`}
     >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+        d="m8.25 4.5 7.5 7.5-7.5 7.5"
       />
     </svg>
   );
@@ -61,28 +61,26 @@ function Sidebar(props) {
       path: "/apply",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
         </svg>
       )
     },
   ];
 
   return (
-    <nav className="h-screen flex flex-col px-4 sm:px-6">
-      {/* Top section containing both hamburger and icon */}
-      <div className="pt-4 sm:pt-12 flex-shrink-0 flex flex-col">
-        {/* Hamburger button - only visible when expanded */}
+    <nav className={`h-screen flex flex-col pl-4 sm:pl-12 transition-all duration-300 ${
+      isExpanded ? "pr-8 sm:pr-16" : "pr-2 sm:pr-4"
+    }`}>
+      {/* Top section - contains everything that should align at top */}
+      <div className="pt-4 sm:pt-12 flex-shrink-0">
+        {/* Branding - visible when expanded */}
         <div className={`transition-all duration-300 ${
-          isExpanded ? "opacity-100 pb-8" : "opacity-0 pointer-events-none pb-0 h-0 overflow-hidden"
-        }`} style={{
-          transitionDelay: isExpanded ? '150ms' : '0ms'
-        }}>
-          <button
-            className="dark:text-gray-300 hover:drop-shadow-4xl transition-smooth"
-            onClick={onToggle}
-          >
-            {nav_hamburger}
-          </button>
+          isExpanded ? "opacity-100 mb-12" : "opacity-0 pointer-events-none h-0 overflow-hidden mb-0"
+        }`}>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold dark:text-gray-200 text-gray-900 tracking-tight">BIND</span>
+            <span className="text-xs dark:text-gray-500 text-gray-600 font-light tracking-wide">Management</span>
+          </div>
         </div>
 
         {/* Active icon - visible when collapsed */}
@@ -94,69 +92,83 @@ function Sidebar(props) {
             <div
               key={item.text}
               className={`transition-all duration-300 ${
-                isExpanded ? "opacity-0 pointer-events-none h-0 overflow-hidden pb-0" : "opacity-100 pb-0"
+                isExpanded ? "opacity-0 pointer-events-none h-0 overflow-hidden" : "opacity-100"
               }`}
             >
               <a
-                className="flex items-center group hover:drop-shadow-4xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 active:scale-95 dark:text-gray-300 font-bold"
+                className="flex items-center group hover:drop-shadow-4xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 dark:text-gray-300 font-bold"
                 href={item.path}
                 title={item.text}
               >
-                <span className="flex-shrink-0 [&>svg]:stroke-[2]">
+                <span className="flex-shrink-0 [&>svg]:stroke-[2] hover-scale">
                   {item.icon}
                 </span>
               </a>
             </div>
           );
         })}
+
+        {/* Navigation Links - visible when expanded */}
+        <ul className={`flex flex-col text-base gap-6 items-start transition-all duration-300 ${
+          isExpanded ? "opacity-100" : "opacity-0 pointer-events-none h-0 overflow-hidden"
+        }`} key={"primary nav"}>
+          {options.map((item) => {
+            const isActive = location === item.text;
+
+            return (
+              <li key={item.text}>
+                <a
+                  className={`flex items-center group hover:drop-shadow-4xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 dark:text-gray-300 ${
+                    isActive ? "font-bold" : ""
+                  }`}
+                  key={item.text}
+                  href={item.path}
+                >
+                  <div className="flex items-center hover-scale">
+                    <span className={`flex-shrink-0 ${
+                      isActive ? "[&>svg]:stroke-[2]" : "[&>svg]:stroke-[1.5]"
+                    }`}>
+                      {item.icon}
+                    </span>
+                    <span className={`capitalize whitespace-nowrap ml-3`}>
+                      {item.text}
+                    </span>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
-      {/* Spacer - collapses when sidebar collapsed */}
-      <div className={`transition-all duration-300 ${
-        isExpanded ? "flex-1" : "flex-none h-0"
-      }`}></div>
-
-      {/* Navigation Links */}
-      <ul className="flex flex-col text-base gap-6 items-start" key={"primary nav"}>
-        {options.map((item) => {
-          const isActive = location === item.text;
-
-          return (
-            <li
-              key={item.text}
-              className={`transition-all duration-300 ${
-                isExpanded ? "opacity-100" : "opacity-0 pointer-events-none h-0 overflow-hidden"
-              }`}
-            >
-              <a
-                className={`flex items-center group hover:drop-shadow-4xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 active:scale-95 dark:text-gray-300 ${
-                  isActive ? "font-bold" : ""
-                }`}
-                key={item.text}
-                href={item.path}
-              >
-                <span className={`flex-shrink-0 transition-all ${
-                  isActive ? "[&>svg]:stroke-[2]" : "[&>svg]:stroke-[1.5] group-hover:[&>svg]:stroke-[2]"
-                }`}>
-                  {item.icon}
-                </span>
-                <span className={`capitalize whitespace-nowrap transition-all duration-300 ml-3`}>
-                  {item.text}
-                </span>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-
-      {/* Spacer to push toggle to bottom */}
+      {/* Spacer to push bottom controls to bottom */}
       <div className="flex-1"></div>
 
-      {/* Theme Toggle - At Bottom - hidden when collapsed */}
-      <div className={`pb-8 sm:pb-12 transition-all duration-300 ${
-        isExpanded ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}>
-        <ThemeToggle />
+      {/* Bottom section - Hamburger and Theme Toggle */}
+      <div className="pb-8 sm:pb-12 flex items-center gap-4">
+        {/* Toggle button - only visible when expanded */}
+        <div className={`transition-all duration-300 ${
+          isExpanded ? "opacity-100" : "opacity-0 pointer-events-none w-0 overflow-hidden"
+        }`} style={{
+          transitionDelay: isExpanded ? '150ms' : '0ms'
+        }}>
+          <button
+            className="dark:text-gray-300 hover:drop-shadow-4xl transition-smooth"
+            onClick={onToggle}
+            title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+          >
+            <div className="hover-scale">
+              {toggleIcon}
+            </div>
+          </button>
+        </div>
+
+        {/* Theme Toggle - hidden when collapsed */}
+        <div className={`transition-all duration-300 ${
+          isExpanded ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}>
+          <ThemeToggle />
+        </div>
       </div>
     </nav>
   );

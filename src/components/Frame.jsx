@@ -25,15 +25,15 @@ function Frame(props) {
           {/* Sidebar - always visible on desktop, hidden on mobile unless expanded */}
           <div
             className={`${
-              isMdOrLarger ? (isExpanded ? "w-40" : "w-16") : (isExpanded ? "w-40" : "w-0")
+              isMdOrLarger ? (isExpanded ? "w-56" : "w-24") : (isExpanded ? "w-56" : "w-0")
             } fixed top-0 h-screen overflow-hidden transition-smooth dark:bg-dark-bg bg-gray-150 flex-shrink-0 z-10`}
             onMouseEnter={() => isMdOrLarger && setIsHovered(true)}
             onMouseLeave={() => isMdOrLarger && setIsHovered(false)}
           >
-            <Sidebar location={location} isExpanded={isExpanded} onToggle={handleToggle} />
+            <Sidebar location={location} isExpanded={isExpanded} isPinned={isPinned} onToggle={handleToggle} />
           </div>
-          <div className={`flex flex-col flex-1 p-4 pb-1 sm:pr-12 sm:pt-12 sm:pb-2 w-full transition-smooth ${
-            isExpanded ? "ml-40" : (isMdOrLarger ? "ml-16" : "")
+          <div className={`flex flex-col flex-1 p-4 pb-1 sm:pl-0 sm:pr-12 sm:pt-12 sm:pb-2 w-full transition-smooth ${
+            isExpanded ? "ml-56" : (isMdOrLarger ? "ml-24" : "")
           }`}>
             <Breadcrumb items={breadcrumbs || [{ label: location }]} location={location} isExpanded={isExpanded} onToggle={handleToggle} isMobile={!isMdOrLarger} />
             <div className="grow">{props.children}</div>

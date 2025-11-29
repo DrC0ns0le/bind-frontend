@@ -58,11 +58,9 @@ export default {
       },
       boxShadow: {
         gb1: [
-          "inset 10px 10px 10px rgba(255, 255, 255, 1)",
           "0px 2px 10px rgba(0, 0, 0, 0.05)",
         ],
         gba1: [
-          "inset 1px 1px 4px rgba(255, 255, 255, 1)",
           "3px 6px 20px rgba(0, 0, 0, 0.05)",
         ],
         gbp1: [
@@ -107,6 +105,16 @@ export default {
           transition: 'all 300ms ease-in-out',
         },
         '.active-scale': {
+          transition: 'transform 200ms ease-in-out',
+          '&:active': {
+            transform: 'scale(0.95)',
+          },
+        },
+        '.hover-scale': {
+          transition: 'transform 200ms ease-in-out',
+          '&:hover': {
+            transform: 'scale(1.05)',
+          },
           '&:active': {
             transform: 'scale(0.95)',
           },

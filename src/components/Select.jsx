@@ -235,7 +235,7 @@ export function Select({
           role="listbox"
           ref={optionsRef}
           className={cn(
-            "fixed z-[9999] mt-1 max-h-32 overflow-auto rounded-md bg-white dark:bg-dark-elevated py-1",
+            "absolute z-[9999] mt-1 max-h-32 overflow-auto rounded-md bg-white dark:bg-dark-elevated py-1",
             "shadow-gb2 dark:shadow-dark-gb2 ring-1 ring-gray-300 dark:ring-dark-border",
             prefersReducedMotion.current
               ? ""
