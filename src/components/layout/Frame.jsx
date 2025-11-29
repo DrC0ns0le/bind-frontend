@@ -35,19 +35,23 @@ function Frame(props) {
           <div
             className={`${
               isMdOrLarger ? (isExpanded ? "w-56" : "w-24") : (isExpanded ? "w-56" : "w-0")
-            } fixed top-0 h-screen overflow-hidden transition-smooth dark:bg-dark-bg bg-gray-150 flex-shrink-0 z-10`}
-            onMouseEnter={() => isMdOrLarger && setIsHovered(true)}
-            onMouseLeave={() => isMdOrLarger && setIsHovered(false)}
+            } relative flex-shrink-0 transition-smooth`}
           >
-            <Sidebar location={location} isExpanded={isExpanded} isPinned={isPinned} onToggle={handleToggle} />
+            <div
+              className={`${
+                isExpanded ? "fixed top-0 h-screen" : "relative h-full"
+              } overflow-hidden transition-smooth dark:bg-dark-bg bg-gray-150 z-10`}
+              onMouseEnter={() => isMdOrLarger && setIsHovered(true)}
+              onMouseLeave={() => isMdOrLarger && setIsHovered(false)}
+            >
+              <Sidebar location={location} isExpanded={isExpanded} isPinned={isPinned} onToggle={handleToggle} />
+            </div>
           </div>
-          <div className={`flex flex-col flex-1 p-4 pb-1 sm:pl-0 sm:pr-12 sm:pt-12 sm:pb-2 w-full transition-smooth ${
-            isExpanded ? "ml-56" : (isMdOrLarger ? "ml-24" : "")
-          }`}>
+          <div className="flex flex-col flex-1 p-4 pb-1 sm:pl-0 sm:pr-12 sm:pt-12 sm:pb-2 w-full transition-smooth">
             <Breadcrumb items={breadcrumbs || [{ label: location }]} location={location} isExpanded={isExpanded} onToggle={handleToggle} isMobile={!isMdOrLarger} />
             <div className="grow">{props.children}</div>
             <footer className="text-xs sm:text-sm text-gray-600 dark:text-gray-500 text-center font-light self-center py-1 sm:py-4 sm:pt-8 transition-smooth">
-              Copyright © 2024 Lee Jack Sonz. All rights reserved.
+              Copyright 2024 Lee Jack Sonz. All rights reserved.
             </footer>
           </div>
         </div>

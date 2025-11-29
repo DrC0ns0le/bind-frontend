@@ -165,8 +165,10 @@ function Sidebar(props) {
 
         {/* Theme Toggle - hidden when collapsed */}
         <div className={`transition-all duration-300 ${
-          isExpanded ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}>
+          isExpanded ? "opacity-100" : "opacity-0 pointer-events-none w-0 overflow-hidden"
+        }`} style={{
+          transitionDelay: isExpanded ? '150ms' : '0ms'
+        }}>
           <ThemeToggle />
         </div>
       </div>

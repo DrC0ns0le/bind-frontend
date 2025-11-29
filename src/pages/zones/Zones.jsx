@@ -4,12 +4,10 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Frame from '../components/Frame';
-import BigButton1 from '../components/ui';
-import { SpinningCog } from '../components/Icons';
-import { PageHeading, Subheading } from '../components/Typography';
-import { zoneService } from '../api/services/zoneService';
-import { getUserFriendlyError } from '../utils/errorHandlers';
+import { Frame } from '../../components/layout';
+import { BigButton1, SpinningCog, PageHeading, Subheading } from '../../components/ui';
+import { zoneService } from '../../api/services/zoneService';
+import { getUserFriendlyError } from '../../utils/errorHandlers';
 
 function Zones() {
   const [data, setData] = useState(null);

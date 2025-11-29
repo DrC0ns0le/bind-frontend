@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from "react";
-import { Chevron_down } from "../components/Icons";
+import { Chevron_down } from "../ui";
 
 // Utility function to combine classNames (replacement for clsx)
 const cn = (...classes) => classes.filter(Boolean).join(" ");

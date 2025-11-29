@@ -62,3 +62,9 @@ packages/react-devtools-fusebox/dist
 packages/react-devtools-inline/dist
 packages/react-devtools-shell/dist
 packages/react-devtools-timeline/dist
+# Environment variables
+.env
+.env.development*
+.env.local
+.env.development.local
+.env.production.local

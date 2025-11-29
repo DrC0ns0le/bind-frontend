@@ -1,5 +1,5 @@
-import Frame from "./components/Frame";
-import { PageHeading, Subheading } from "./components/Typography";
+import { Frame } from "./components/layout";
+import { PageHeading, Subheading } from "./components/ui";
 
 function Home() {
   return (
