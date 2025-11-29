@@ -1,48 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "./Sidebar";
+import Breadcrumb from "./Breadcrumb";
+// import TopBar from "./TopBar";
 import { useMediaQuery } from "react-responsive";
 
 function Frame(props) {
-  const { location } = props;
-  const isMdOrLarger = useMediaQuery({ minWidth: 1080 });
+  const { location, breadcrumbs } = props;
+  const isMdOrLarger = useMediaQuery({ minWidth: 768 });
 
-  const [showSidebar, setShowSidebar] = useState(isMdOrLarger);
+  const [isPinned, setIsPinned] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const nav_hamburger = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="1.5"
-      stroke="currentColor"
-      className="w-8 h-8"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-      />
-    </svg>
-  );
+  const isExpanded = isPinned || (isHovered && !isPinned);
+
+  const handleToggle = () => {
+    setIsPinned(!isPinned);
+    setIsHovered(false);
+  };
 
   return (
     <>
-      <div>
-        <div className="h-screen w-screen flex flex-row justify-center dark:bg-dark-bg">
+      <div className="min-h-screen w-full flex flex-row justify-center dark:bg-dark-bg bg-gray-150 overflow-hidden transition-smooth">
+        <div className="w-full max-w-screen-2xl flex flex-row dark:bg-dark-bg bg-gray-150 min-w-0 transition-smooth">
+          {/* Sidebar - always visible on desktop, hidden on mobile unless expanded */}
           <div
-            className={`bg-gray-150 dark:bg-dark-bg ${
-              showSidebar ? "md:pl-32 w-[1%] min-w-24" : "w-0 min-w-0"
-            } max-w-128 overflow-hidden sidebar-width transition-smooth`}
+            className={`${
+              isMdOrLarger ? (isExpanded ? "w-40" : "w-16") : (isExpanded ? "w-40" : "w-0")
+            } fixed top-0 h-screen overflow-hidden transition-smooth dark:bg-dark-bg bg-gray-150 flex-shrink-0 z-10`}
+            onMouseEnter={() => isMdOrLarger && setIsHovered(true)}
+            onMouseLeave={() => isMdOrLarger && setIsHovered(false)}
           >
-            <Sidebar location={location} />
+            <Sidebar location={location} isExpanded={isExpanded} onToggle={handleToggle} />
           </div>
-          <div className="flex flex-col bg-gray-150 dark:bg-dark-bg p-4 pb-1 sm:p-12 sm:pb-2 2xl:px-48 w-full max-w-screen-2xl overflow-auto">
-            <button className="pb-4 dark:text-gray-300" onClick={() => setShowSidebar(!showSidebar)}>
-              {nav_hamburger}
-            </button>
-
+          <div className={`flex flex-col flex-1 p-4 pb-1 sm:pr-12 sm:pt-12 sm:pb-2 w-full transition-smooth ${
+            isExpanded ? "ml-40" : (isMdOrLarger ? "ml-16" : "")
+          }`}>
+            <Breadcrumb items={breadcrumbs || [{ label: location }]} location={location} isExpanded={isExpanded} onToggle={handleToggle} isMobile={!isMdOrLarger} />
             <div className="grow">{props.children}</div>
-            <footer className="text-xs sm:text-sm text-gray-600 dark:text-gray-500 text-center font-light self-center py-1 sm:py-4 sm:pt-8">
+            <footer className="text-xs sm:text-sm text-gray-600 dark:text-gray-500 text-center font-light self-center py-1 sm:py-4 sm:pt-8 transition-smooth">
               Copyright © 2024 Lee Jack Sonz. All rights reserved.
             </footer>
           </div>

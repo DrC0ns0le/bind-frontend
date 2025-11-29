@@ -2,41 +2,162 @@ import React from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
 function Sidebar(props) {
-  const { location } = props;
+  const { location, isExpanded = false, onToggle } = props;
+  const hamburgerPosRef = React.useRef(null);
+  const [isReady, setIsReady] = React.useState(false);
+
+  const nav_hamburger = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      stroke="currentColor"
+      className="w-6 h-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+      />
+    </svg>
+  );
+
+  // Mark as ready after mount
+  React.useEffect(() => {
+    const timeout = setTimeout(() => setIsReady(true), 50);
+    return () => clearTimeout(timeout);
+  }, []);
   const options = [
-    { text: "home", path: "/" },
-    { text: "zones", path: "/zones" },
-    { text: "global", path: "/global" },
-    { text: "apply", path: "/apply" },
+    {
+      text: "home",
+      path: "/",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+        </svg>
+      )
+    },
+    {
+      text: "zones",
+      path: "/zones",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
+        </svg>
+      )
+    },
+    {
+      text: "global",
+      path: "/global",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+        </svg>
+      )
+    },
+    {
+      text: "apply",
+      path: "/apply",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg>
+      )
+    },
   ];
 
   return (
-    <nav className="h-screen flex flex-col items-center py-8 pr-8">
-      {/* Spacer to push nav to center */}
-      <div className="flex-1"></div>
+    <nav className="h-screen flex flex-col px-4 sm:px-6">
+      {/* Top section containing both hamburger and icon */}
+      <div className="pt-4 sm:pt-12 flex-shrink-0 flex flex-col">
+        {/* Hamburger button - only visible when expanded */}
+        <div className={`transition-all duration-300 ${
+          isExpanded ? "opacity-100 pb-8" : "opacity-0 pointer-events-none pb-0 h-0 overflow-hidden"
+        }`} style={{
+          transitionDelay: isExpanded ? '150ms' : '0ms'
+        }}>
+          <button
+            className="dark:text-gray-300 hover:drop-shadow-4xl transition-smooth"
+            onClick={onToggle}
+          >
+            {nav_hamburger}
+          </button>
+        </div>
 
-      {/* Navigation Links - Centered */}
-      <ul className="flex flex-col text-lg gap-6 text-center" key={"primary nav"}>
-        {options.map((item) => (
-          <li key={item.text}>
-            <a
-              className={`hover:drop-shadow-4xl md:text-xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 capitalize active:text-lg dark:text-gray-300 ${
-                location === item.text ? "font-bold" : ""
-              }`}
+        {/* Active icon - visible when collapsed */}
+        {options.map((item) => {
+          const isActive = location === item.text;
+          if (!isActive) return null;
+
+          return (
+            <div
               key={item.text}
-              href={item.path}
+              className={`transition-all duration-300 ${
+                isExpanded ? "opacity-0 pointer-events-none h-0 overflow-hidden pb-0" : "opacity-100 pb-0"
+              }`}
             >
-              {item.text}
-            </a>
-          </li>
-        ))}
+              <a
+                className="flex items-center group hover:drop-shadow-4xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 active:scale-95 dark:text-gray-300 font-bold"
+                href={item.path}
+                title={item.text}
+              >
+                <span className="flex-shrink-0 [&>svg]:stroke-[2]">
+                  {item.icon}
+                </span>
+              </a>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Spacer - collapses when sidebar collapsed */}
+      <div className={`transition-all duration-300 ${
+        isExpanded ? "flex-1" : "flex-none h-0"
+      }`}></div>
+
+      {/* Navigation Links */}
+      <ul className="flex flex-col text-base gap-6 items-start" key={"primary nav"}>
+        {options.map((item) => {
+          const isActive = location === item.text;
+
+          return (
+            <li
+              key={item.text}
+              className={`transition-all duration-300 ${
+                isExpanded ? "opacity-100" : "opacity-0 pointer-events-none h-0 overflow-hidden"
+              }`}
+            >
+              <a
+                className={`flex items-center group hover:drop-shadow-4xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 active:scale-95 dark:text-gray-300 ${
+                  isActive ? "font-bold" : ""
+                }`}
+                key={item.text}
+                href={item.path}
+              >
+                <span className={`flex-shrink-0 transition-all ${
+                  isActive ? "[&>svg]:stroke-[2]" : "[&>svg]:stroke-[1.5] group-hover:[&>svg]:stroke-[2]"
+                }`}>
+                  {item.icon}
+                </span>
+                <span className={`capitalize whitespace-nowrap transition-all duration-300 ml-3`}>
+                  {item.text}
+                </span>
+              </a>
+            </li>
+          );
+        })}
       </ul>
 
       {/* Spacer to push toggle to bottom */}
       <div className="flex-1"></div>
 
-      {/* Theme Toggle - At Bottom */}
-      <ThemeToggle />
+      {/* Theme Toggle - At Bottom - hidden when collapsed */}
+      <div className={`pb-8 sm:pb-12 transition-all duration-300 ${
+        isExpanded ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}>
+        <ThemeToggle />
+      </div>
     </nav>
   );
 }

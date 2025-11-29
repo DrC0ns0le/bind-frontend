@@ -127,9 +127,14 @@ function Zone() {
     setCurrentPage(newPage);
   };
 
+  const breadcrumbs = [
+    { label: "zones", path: "/zones" },
+    { label: data[0]?.name || "...", path: null }
+  ];
+
   if (loading[0]) {
     return (
-      <Frame location="zones">
+      <Frame location="zones" breadcrumbs={[{ label: "zones", path: "/zones" }]}>
         <div className="flex items-center justify-center h-screen">
           {SpinningCog()}
         </div>
@@ -139,7 +144,7 @@ function Zone() {
 
   if (error[0]) {
     return (
-      <Frame location="zones">
+      <Frame location="zones" breadcrumbs={[{ label: "zones", path: "/zones" }]}>
         <div className="flex items-center justify-center h-screen dark:text-gray-300">
           <p>Error: {error[0].message}</p>
           <p>---</p>
@@ -150,9 +155,9 @@ function Zone() {
   }
 
   return (
-    <Frame location="zones">
+    <Frame location="zones" breadcrumbs={breadcrumbs}>
       <div>
-        <p className="text-2xl font-black tracking-tight">ZONE</p>
+        <p className="text-2xl font-black tracking-tight dark:text-gray-300 transition-smooth">ZONE</p>
         <PageHeading className="text-[80px] pb-4 text-wrap overflow-scroll">
           {data[0]?.name}
         </PageHeading>

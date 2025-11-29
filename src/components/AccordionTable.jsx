@@ -140,7 +140,7 @@ export function Accordion({
         aria-disabled={disableExpand}
         tabIndex={disableExpand ? -1 : 0}
         className={cn(
-          "flex flex-row w-full text-left cursor-pointer border-t border-gray-200 dark:border-dark-border dark:text-gray-300",
+          "flex flex-row w-full text-left cursor-pointer border-t border-gray-200 dark:border-dark-border dark:text-gray-300 transition-smooth",
           disableExpand && "cursor-default",
           className
         )}
