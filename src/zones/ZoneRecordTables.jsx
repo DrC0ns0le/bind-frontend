@@ -1,11 +1,11 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { Combobox, Transition } from "@headlessui/react";
+import React, { useState, useEffect } from "react";
 import {
   Chevron_down,
   Chevron_up,
   PlusIcon,
   RefreshIcon,
 } from "../components/Icons";
+import { Select } from "../components/Select";
 import {
   Accordion,
   AccordionTitle,
@@ -19,6 +19,30 @@ import axios from "axios";
 import { useNotification } from "../components/Alert";
 
 const apiUrl = import.meta.env.VITE_API_URL;
+
+/**
+ * Helper function to determine the background color class based on record status
+ * @param {Object} record - The DNS record object
+ * @returns {string} The CSS class for background color
+ */
+function getRecordStatusClassName(record) {
+  if (!record.staging) {
+    return "";
+  }
+
+  // Record is staged for deletion
+  if (record.deleted_at !== 0) {
+    return "bg-red-200";
+  }
+
+  // Record is newly created (not modified)
+  if (record.created_at === record.modified_at) {
+    return "bg-green-200";
+  }
+
+  // Record is modified
+  return "bg-slate-200";
+}
 
 export function RecordAccordionTable(props) {
   const [allRecords, setAllRecords] = useState(props.rows);
@@ -45,16 +69,6 @@ export function RecordAccordionTable(props) {
       });
     }
     return updatedSelectedType;
-  });
-
-  const [query, setQuery] = useState(() => {
-    const updatedQuery = {};
-    if (props.rows !== null) {
-      props.rows.forEach((record) => {
-        updatedQuery[record.uuid] = "";
-      });
-    }
-    return updatedQuery;
   });
   const { refresh, setRefresh } = props;
 
@@ -96,17 +110,8 @@ export function RecordAccordionTable(props) {
   const recordsTypes = ["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT", "PTR"];
 
   function recordsTypeComboBox(record) {
-    const filteredType =
-      query[record.uuid] === ""
-        ? recordsTypes
-        : recordsTypes.filter((recordsType) => {
-            return recordsType
-              .toLowerCase()
-              .includes(query[record.uuid].toLowerCase());
-          });
-
     return (
-      <Combobox
+      <Select
         value={selectedType[record.uuid]}
         onChange={(choice) => {
           setselectedType((prevSelectedType) => {
@@ -115,68 +120,10 @@ export function RecordAccordionTable(props) {
             return updatedSelectedType;
           });
         }}
-        // id={record.uuid + "type"}
+        options={recordsTypes}
+        displayValue={(recordType) => recordType}
         name={record.uuid + "type"}
-      >
-        <div className="flex flex-row w-full px-3 pr-1 rounded-md border-0 py-1.5 text-gray-900 shadow-gb2 hover:shadow-gba2 transition-smooth ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-800 md:text-sm md:leading-6">
-          <Combobox.Input
-            onChange={(event) => {
-              setQuery((prevQuery) => {
-                const updatedQuery = { ...prevQuery };
-                updatedQuery[record.uuid] = event.target.value;
-                return updatedQuery;
-              });
-            }}
-            displayValue={(recordType) => recordType}
-            className="w-full outline-none font-mono"
-            name={record.uuid + "type"}
-            id={record.uuid + "type"}
-          />
-          <Combobox.Button className="scale-75">
-            <Chevron_down />
-          </Combobox.Button>
-        </div>
-        <Transition
-          as={Fragment}
-          enter="transition-all ease-in-out duration-300"
-          enterFrom="h-0"
-          enterTo="h-32"
-          leave="transition ease-in-out duration-100"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-          afterLeave={() => {
-            setQuery((prevQuery) => {
-              const updatedQuery = { ...prevQuery };
-              updatedQuery[record.uuid] = "";
-              return updatedQuery;
-            });
-          }}
-        >
-          <Combobox.Options className="font-mono cursor-pointer p-1 max-h-32 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-gb2 ring-1 ring-black ring-opacity-5 md:text-sm">
-            {filteredType.map((recordType) => (
-              /* Use the `active` state to conditionally style the active option. */
-              /* Use the `selected` state to conditionally style the selected option. */
-              <Combobox.Option
-                key={recordType}
-                value={recordType}
-                as={Fragment}
-              >
-                {({ active, selected }) => (
-                  <li
-                    className={`p-1 pl-3 transition-smooth ${
-                      active || selected
-                        ? "font-bold text-black"
-                        : "bg-white text-black"
-                    }`}
-                  >
-                    {recordType}
-                  </li>
-                )}
-              </Combobox.Option>
-            ))}
-          </Combobox.Options>
-        </Transition>
-      </Combobox>
+      />
     );
   }
 
@@ -391,7 +338,7 @@ export function RecordAccordionTable(props) {
         </IconButton>
       </div>
       {isLargeScreen ? (
-        <TableHeader className="pr-[72px]">
+        <TableHeader showChevronSpace>
           {Object.entries(headers).map(([header, className]) => (
             <div
               key={header}
@@ -406,23 +353,16 @@ export function RecordAccordionTable(props) {
           Zone Records
         </TableHeader>
       )}
-      <div className="outline outline-1 outline-gray-200 translate-y-[1px] overflow-y-clip">
+      <div className="border-x border-b border-gray-200 rounded-b-lg overflow-hidden">
         {allRecords != null &&
           allRecords.map((record) => (
             <Accordion
-              additionalClass={`${
-                record.staging
-                  ? record.deleted_at == 0
-                    ? record.created_at == record.modified_at
-                      ? "bg-green-200"
-                      : "bg-slate-200"
-                    : "bg-red-200"
-                  : ""
-              }`}
-              key={record.uuid + "accordion"}
+              className={getRecordStatusClassName(record)}
+              key={record.uuid}
+              id={`record-${record.uuid}`}
             >
               {isLargeScreen ? (
-                record.uuid != "new" ? (
+                record.uuid !== "new" ? (
                   <AccordionTitle key={record.uuid + "title"}>
                     {Object.entries(headers).map(([header, className]) => (
                       <div
@@ -438,7 +378,7 @@ export function RecordAccordionTable(props) {
                     <p>New Record</p>
                   </AccordionTitle>
                 )
-              ) : record.uuid != "new" ? (
+              ) : record.uuid !== "new" ? (
                 <AccordionTitle key={record.uuid + "title"}>
                   {Object.entries(headers).map(([header, _]) => (
                     <div className="flex flex-row" key={record.uuid + header}>
@@ -471,13 +411,6 @@ export function RecordAccordionTable(props) {
 }
 
 export function SimpleRecordAccordionTable(props) {
-  const [query, setQuery] = useState(() => {
-    const updatedQuery = {};
-    props.rows.forEach((record) => {
-      updatedQuery[record.uuid] = "";
-    });
-    return updatedQuery;
-  });
   const { refresh, setRefresh } = props;
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
 
@@ -536,20 +469,12 @@ export function SimpleRecordAccordionTable(props) {
           Staging Records
         </TableHeader>
       )}
-      {
-        <div className="outline outline-1 outline-gray-200 translate-y-[1px] overflow-x-auto overflow-y-clip">
+      <div className="border-x border-b border-gray-200 rounded-b-lg overflow-hidden">
           {props.rows.map((record) => (
             <Accordion
-              additionalClass={`${
-                record.staging
-                  ? record.deleted_at == 0
-                    ? record.created_at == record.modified_at
-                      ? "bg-green-200"
-                      : "bg-slate-200"
-                    : "bg-red-200"
-                  : ""
-              }`}
+              className={getRecordStatusClassName(record)}
               key={record.uuid}
+              id={`simple-record-${record.uuid}`}
               disableExpand={true}
             >
               {
@@ -584,8 +509,7 @@ export function SimpleRecordAccordionTable(props) {
               <AccordionContent key={record.uuid}></AccordionContent>
             </Accordion>
           ))}
-        </div>
-      }
+      </div>
     </div>
   );
 }
