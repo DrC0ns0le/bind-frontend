@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import Breadcrumb from "./Breadcrumb";
 // import TopBar from "./TopBar";
@@ -8,10 +8,19 @@ function Frame(props) {
   const { location, breadcrumbs } = props;
   const isMdOrLarger = useMediaQuery({ minWidth: 768 });
 
-  const [isPinned, setIsPinned] = useState(false);
+  // Initialize isPinned from localStorage
+  const [isPinned, setIsPinned] = useState(() => {
+    const stored = localStorage.getItem('sidebarPinned');
+    return stored ? JSON.parse(stored) : false;
+  });
   const [isHovered, setIsHovered] = useState(false);
 
   const isExpanded = isPinned || (isHovered && !isPinned);
+
+  // Persist isPinned to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('sidebarPinned', JSON.stringify(isPinned));
+  }, [isPinned]);
 
   const handleToggle = () => {
     setIsPinned(!isPinned);

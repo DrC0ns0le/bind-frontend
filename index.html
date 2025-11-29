@@ -5,6 +5,31 @@
     <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bind Frontend</title>
+    <script>
+      // Prevent white flash on page reload by applying dark mode immediately
+      (function() {
+        const darkMode = localStorage.getItem('darkMode');
+        if (darkMode && JSON.parse(darkMode)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <style>
+      /* Prevent white flash before styles load */
+      html {
+        background-color: #ffffff;
+      }
+      html.dark {
+        background-color: #0a0a0a;
+        color-scheme: dark;
+      }
+      html body {
+        background-color: #ffffff;
+      }
+      html.dark body {
+        background-color: #0a0a0a;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
