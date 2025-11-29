@@ -32,16 +32,16 @@ function getRecordStatusClassName(record) {
 
   // Record is staged for deletion
   if (record.deleted_at !== 0) {
-    return "bg-red-200";
+    return "bg-red-200 dark:bg-[#3d1a1a]";
   }
 
   // Record is newly created (not modified)
   if (record.created_at === record.modified_at) {
-    return "bg-green-200";
+    return "bg-green-200 dark:bg-[#1a3d1a]";
   }
 
   // Record is modified
-  return "bg-slate-200";
+  return "bg-gray-200 dark:bg-[#2a2a2a]";
 }
 
 export function RecordAccordionTable(props) {
@@ -220,7 +220,7 @@ export function RecordAccordionTable(props) {
             <div className="flex flex-col w-[30%] md:w-[10%]">
               <label
                 htmlFor={record.uuid + "type"}
-                className="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
               >
                 Type:
               </label>
@@ -229,7 +229,7 @@ export function RecordAccordionTable(props) {
             <div className="flex flex-col md:w-[30%]">
               <label
                 htmlFor={record.uuid + "host"}
-                className="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
               >
                 Hostname:
               </label>
@@ -244,7 +244,7 @@ export function RecordAccordionTable(props) {
             <div className="flex flex-col md:w-[45%]">
               <label
                 htmlFor={record.uuid + "content"}
-                className="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
               >
                 Content:
               </label>
@@ -260,7 +260,7 @@ export function RecordAccordionTable(props) {
             <div className="flex flex-col w-[40%] md:w-[10%]">
               <label
                 htmlFor={record.uuid + "ttl"}
-                className="p-1 text-sm pt-4 md:pt-1"
+                className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
               >
                 TTL:
               </label>
@@ -284,9 +284,9 @@ export function RecordAccordionTable(props) {
                 name={record.uuid + "add_ptr"}
                 id={record.uuid + "add_ptr"}
                 defaultChecked={record.add_ptr}
-                className="w-4 h-4 checked:bg-gray-800 border-gray-900"
+                className="w-4 h-4 checked:bg-gray-800 dark:checked:bg-gray-600 border-gray-900 dark:border-gray-600 dark:bg-dark-elevated"
               />
-              <label htmlFor={record.uuid + "add_ptr"} className="p-1 text-sm">
+              <label htmlFor={record.uuid + "add_ptr"} className="p-1 text-sm dark:text-gray-400">
                 Add Reverse DNS (PTR)
               </label>
             </div>
@@ -295,7 +295,7 @@ export function RecordAccordionTable(props) {
             <DangerButton onClick={(e) => handleDelete(record.uuid)}>
               Delete
             </DangerButton>
-            <p className="pl-2 md:pb-1 self-end text-gray-500 text-[12px] border-none grow ">
+            <p className="pl-2 md:pb-1 self-end text-gray-500 dark:text-gray-500 text-[12px] border-none grow ">
               {record.uuid !== "new" ? `UUID: ${record.uuid}` : ""}
             </p>
             <PrimaryButton type="submit" className="place-self-end">
@@ -311,7 +311,7 @@ export function RecordAccordionTable(props) {
     <div className="flex flex-col">
       <div className="flex flex-row p-2 pb-3">
         <div className="flex flex-row w-[30%] items-center">
-          <label htmlFor="host" className="z-10 relative left-3 text-sm w-0">
+          <label htmlFor="host" className="z-10 relative left-3 text-sm w-0 dark:text-gray-400">
             Search:{" "}
           </label>
           <TextInput
@@ -342,7 +342,7 @@ export function RecordAccordionTable(props) {
           {Object.entries(headers).map(([header, className]) => (
             <div
               key={header}
-              className={`${className} font-semibold font-mono tracking-tight text-md`}
+              className={`${className} font-semibold font-mono tracking-tight text-md dark:text-gray-300`}
             >
               {header}
             </div>
@@ -353,7 +353,7 @@ export function RecordAccordionTable(props) {
           Zone Records
         </TableHeader>
       )}
-      <div className="border-x border-b border-gray-200 rounded-b-lg overflow-hidden">
+      <div className="border-x border-b border-gray-200 dark:border-dark-border rounded-b-lg overflow-hidden">
         {allRecords != null &&
           allRecords.map((record) => (
             <Accordion
@@ -437,7 +437,7 @@ export function SimpleRecordAccordionTable(props) {
     <div className="flex flex-col">
       <div className="flex flex-row p-2 pb-3">
         <div className="flex flex-row w-[30%] items-center">
-          <label htmlFor="host" className="z-10 relative left-3 text-sm w-0">
+          <label htmlFor="host" className="z-10 relative left-3 text-sm w-0 dark:text-gray-400">
             Search:{" "}
           </label>
           <TextInput
@@ -458,7 +458,7 @@ export function SimpleRecordAccordionTable(props) {
           {Object.entries(headers).map(([header, className]) => (
             <div
               key={header}
-              className={`${className} font-semibold font-mono tracking-tight text-md`}
+              className={`${className} font-semibold font-mono tracking-tight text-md dark:text-gray-300`}
             >
               {header}
             </div>
@@ -469,7 +469,7 @@ export function SimpleRecordAccordionTable(props) {
           Staging Records
         </TableHeader>
       )}
-      <div className="border-x border-b border-gray-200 rounded-b-lg overflow-hidden">
+      <div className="border-x border-b border-gray-200 dark:border-dark-border rounded-b-lg overflow-hidden">
           {props.rows.map((record) => (
             <Accordion
               className={getRecordStatusClassName(record)}

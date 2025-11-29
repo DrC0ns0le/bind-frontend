@@ -78,8 +78,8 @@ const Notification = ({ id, type, message, onClose, isLeaving }) => {
 
   return (
     <div
-      className={`${containerClass} border-[1px] bg-white p-3 mt-4 mx-4 w-[90vw] max-w-[400px] rounded-[8px]
-                  transition-all duration-300 ease-in-out shadow-ga1 hover:shadow-gah1
+      className={`${containerClass} border-[1px] bg-white dark:bg-dark-elevated p-3 mt-4 mx-4 w-[90vw] max-w-[400px] rounded-[8px]
+                  transition-all duration-300 ease-in-out shadow-ga1 dark:shadow-dark-gb1 hover:shadow-gah1 dark:hover:shadow-dark-gba1
                   ${
                     isLeaving
                       ? "opacity-0 -translate-y-full"
@@ -92,7 +92,7 @@ const Notification = ({ id, type, message, onClose, isLeaving }) => {
           <Icon className={`h-5 w-5 ${iconColor}`} aria-hidden="true" />
         </div>
         <div className="ml-8">
-          <p className="text-sm text-gray-800 normal-case whitespace-pre-line">
+          <p className="text-sm text-gray-800 dark:text-gray-200 normal-case whitespace-pre-line">
             {message}
           </p>
         </div>

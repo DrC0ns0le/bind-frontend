@@ -10,7 +10,7 @@ function BigButton1(props) {
 
   return (
     <button
-      className="font-medium py-2 md:px-4 rounded-[8px] transition-smooth md:mr-5 mb-5 active-scale shadow-gb1 hover:shadow-gba1 w-[350px] h-[100px] text-xl"
+      className="font-medium py-2 md:px-4 rounded-[8px] transition-smooth md:mr-5 mb-5 active-scale shadow-gb1 dark:shadow-dark-gb1 hover:shadow-gba1 dark:hover:shadow-dark-gba1 dark:bg-dark-elevated w-[350px] h-[100px] text-xl dark:text-gray-300"
       onClick={() => {
         onClickHandler();
       }}
@@ -24,7 +24,7 @@ function BigButton1(props) {
 export function PrimaryButton({ children, className = "", ...props }) {
   return (
     <button
-      className={`rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-gb2 hover:shadow-gba2 hover:bg-primary-hover transition-smooth active-scale ${className}`}
+      className={`rounded-md bg-primary dark:bg-dark-elevated px-4 py-2 text-sm font-semibold text-white shadow-gb2 dark:shadow-dark-gb2 hover:shadow-gba2 dark:hover:shadow-dark-gba2 hover:bg-primary-hover dark:hover:bg-dark-hover transition-smooth active-scale ${className}`}
       {...props}
     >
       {children}
@@ -36,7 +36,7 @@ export function PrimaryButton({ children, className = "", ...props }) {
 export function DangerButton({ children, className = "", ...props }) {
   return (
     <button
-      className={`rounded-md self-center outline outline-[1px] outline-danger px-2.5 py-1.5 text-sm text-danger shadow-gb2 hover:shadow-gba2 hover:text-white hover:bg-danger transition-smooth active-scale w-[86px] h-[32px] text-center cursor-pointer ${className}`}
+      className={`rounded-md self-center outline outline-[1px] outline-danger px-2.5 py-1.5 text-sm text-danger shadow-gb2 dark:shadow-dark-gb2 hover:shadow-gba2 dark:hover:shadow-dark-gba2 hover:text-white hover:bg-danger transition-smooth active-scale w-[86px] h-[32px] text-center cursor-pointer ${className}`}
       {...props}
     >
       {children}
@@ -48,7 +48,7 @@ export function DangerButton({ children, className = "", ...props }) {
 export function IconButton({ children, className = "", ...props }) {
   return (
     <button
-      className={`rounded-md p-2 hover:bg-gray-100 transition-smooth active-scale ${className}`}
+      className={`rounded-md p-2 hover:bg-gray-100 dark:hover:bg-dark-hover transition-smooth active-scale ${className}`}
       {...props}
     >
       {children}

@@ -201,13 +201,13 @@ export function Select({
             activeIndex >= 0 ? `${name}-option-${activeIndex}` : undefined
           }
           className={cn(
-            "font-mono block w-full px-2 rounded-md border-0 py-1.5 text-gray-900",
-            "shadow-gb2 hover:shadow-gba2 transition-smooth",
-            "ring-1 ring-inset ring-gray-300",
-            "placeholder:text-gray-400",
-            "focus:ring-2 focus:ring-inset focus:ring-gray-800 outline-none",
+            "font-mono block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-200 dark:bg-dark-elevated",
+            "shadow-gb2 dark:shadow-dark-gb2 hover:shadow-gba2 dark:hover:shadow-dark-gba2 transition-smooth",
+            "ring-1 ring-inset ring-gray-300 dark:ring-dark-border",
+            "placeholder:text-gray-400 dark:placeholder:text-gray-600",
+            "focus:ring-2 focus:ring-inset focus:ring-gray-800 dark:focus:ring-gray-500 outline-none",
             "md:text-sm md:leading-6",
-            disabled && "bg-gray-100 cursor-not-allowed"
+            disabled && "bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
           )}
         />
         {/* Chevron Button */}
@@ -218,7 +218,7 @@ export function Select({
           tabIndex={-1}
           aria-label="Toggle dropdown"
           className={cn(
-            "absolute inset-y-0 right-0 flex items-center pr-2",
+            "absolute inset-y-0 right-0 flex items-center pr-2 dark:text-gray-300",
             disabled ? "cursor-not-allowed" : "cursor-pointer"
           )}
         >
@@ -235,8 +235,8 @@ export function Select({
           role="listbox"
           ref={optionsRef}
           className={cn(
-            "fixed z-[9999] mt-1 max-h-32 overflow-auto rounded-md bg-white py-1",
-            "shadow-gb2 ring-1 ring-gray-300",
+            "fixed z-[9999] mt-1 max-h-32 overflow-auto rounded-md bg-white dark:bg-dark-elevated py-1",
+            "shadow-gb2 dark:shadow-dark-gb2 ring-1 ring-gray-300 dark:ring-dark-border",
             prefersReducedMotion.current
               ? ""
               : "animate-in fade-in duration-200"
@@ -248,7 +248,7 @@ export function Select({
           }}
         >
           {filteredOptions.length === 0 ? (
-            <div className="px-2 py-2 text-sm text-gray-500 font-mono">
+            <div className="px-2 py-2 text-sm text-gray-500 dark:text-gray-500 font-mono">
               No results found
             </div>
           ) : (
@@ -266,9 +266,9 @@ export function Select({
                     onClick={() => handleSelect(option)}
                     onMouseEnter={() => setActiveIndex(index)}
                     className={cn(
-                      "cursor-pointer select-none px-2 py-2 text-sm font-mono",
+                      "cursor-pointer select-none px-2 py-2 text-sm font-mono dark:text-gray-300",
                       (isActive || isSelected) && "font-bold",
-                      isActive && "bg-gray-100"
+                      isActive && "bg-gray-100 dark:bg-dark-hover"
                     )}
                   >
                     {displayValue(option)}

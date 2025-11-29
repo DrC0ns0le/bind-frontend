@@ -47,7 +47,7 @@ function Zones() {
             {SpinningCog()}
           </div>
         ) : error ? (
-          <p>Error! {error.message}</p>
+          <p className="dark:text-gray-300">Error! {error.message}</p>
         ) : (
           data.data.map((option) => (
             <BigButton1

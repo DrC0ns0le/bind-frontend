@@ -140,7 +140,7 @@ function Zone() {
   if (error[0]) {
     return (
       <Frame location="zones">
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-screen dark:text-gray-300">
           <p>Error: {error[0].message}</p>
           <p>---</p>
           <p>{error[0].response.data.message}</p>
@@ -163,7 +163,7 @@ function Zone() {
         {loading[1] ? (
           <div className="flex justify-center">{SpinningCog()}</div>
         ) : error[1] ? (
-          <div className="flex flex-col items-center justify-center pt-8">
+          <div className="flex flex-col items-center justify-center pt-8 dark:text-gray-300">
             <p>Error: Failed to fetch records</p>
             <p className="p-2">---</p>
             <p>
