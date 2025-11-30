@@ -22,12 +22,6 @@ spec:
       # Privileged mode (required for BuildKit to manage containers)
       privileged: true
 
-    # Environment for BuildKit
-    env:
-      # Allow using insecure registries if needed
-      - name: BUILDKITD_FLAGS
-        value: "--oci-worker-no-process-sandbox"
-
     # Volume mounts for Docker config (registry auth)
     volumeMounts:
       - name: docker-config
