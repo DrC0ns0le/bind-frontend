@@ -105,11 +105,23 @@ EOF
             echo "❌ Build failed. Check BuildKit logs above."
         }
         always {
-            container('buildkit') {
+            script {
                 // Clean up credentials if they were created
-                sh 'rm -f ~/.docker/config.json'
+                try {
+                    container('buildkit') {
+                        sh 'rm -f ~/.docker/config.json'
+                    }
+                } catch (Exception e) {
+                    echo "ℹ️  Skipping credential cleanup (container not available)"
+                }
+
+                // Clean workspace
+                try {
+                    cleanWs()
+                } catch (Exception e) {
+                    echo "ℹ️  Skipping workspace cleanup (workspace not available)"
+                }
             }
-            cleanWs()
         }
     }
 }
