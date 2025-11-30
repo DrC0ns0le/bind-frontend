@@ -91,13 +91,15 @@ EOF
 
     post {
         success {
-            echo "✅ Build completed successfully!"
-            echo "Images available at:"
-            echo "  ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}"
-            if (GIT_BRANCH_NAME == 'main' || GIT_BRANCH_NAME == 'master') {
-                echo "  ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest"
+            script {
+                echo "✅ Build completed successfully!"
+                echo "Images available at:"
+                echo "  ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}"
+                if (GIT_BRANCH_NAME == 'main' || GIT_BRANCH_NAME == 'master') {
+                    echo "  ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest"
+                }
+                echo "Architectures: ${BUILD_PLATFORMS}"
             }
-            echo "Architectures: ${BUILD_PLATFORMS}"
         }
         failure {
             echo "❌ Build failed. Check BuildKit logs above."
