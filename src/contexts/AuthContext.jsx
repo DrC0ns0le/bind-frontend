@@ -68,7 +68,7 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const redirectUri = import.meta.env.VITE_OAUTH_REDIRECT_URI;
+      const redirectUri = window.ENV?.VITE_OAUTH_REDIRECT_URI || import.meta.env.VITE_OAUTH_REDIRECT_URI;
       const codeVerifier = localStorage.getItem(STORAGE_KEYS.PKCE_VERIFIER);
       const { token: accessToken, refreshToken: newRefreshToken } = await authService.exchangeCodeForTokens(code, redirectUri, codeVerifier);
 

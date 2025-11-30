@@ -24,8 +24,8 @@ export const authService = {
    * @returns {Promise<Object>} { token, refreshToken }
    */
   async exchangeCodeForTokens(code, redirectUri, codeVerifier) {
-    const tokenUrl = import.meta.env.VITE_OAUTH_TOKEN_URL;
-    const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
+    const tokenUrl = window.ENV?.VITE_OAUTH_TOKEN_URL || import.meta.env.VITE_OAUTH_TOKEN_URL;
+    const clientId = window.ENV?.VITE_OAUTH_CLIENT_ID || import.meta.env.VITE_OAUTH_CLIENT_ID;
 
     // Keycloak expects application/x-www-form-urlencoded
     const params = new URLSearchParams({
@@ -61,8 +61,8 @@ export const authService = {
    * @returns {Promise<Object>} { token, refreshToken }
    */
   async refreshToken(refreshToken) {
-    const tokenUrl = import.meta.env.VITE_OAUTH_TOKEN_URL;
-    const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
+    const tokenUrl = window.ENV?.VITE_OAUTH_TOKEN_URL || import.meta.env.VITE_OAUTH_TOKEN_URL;
+    const clientId = window.ENV?.VITE_OAUTH_CLIENT_ID || import.meta.env.VITE_OAUTH_CLIENT_ID;
 
     const params = new URLSearchParams({
       grant_type: 'refresh_token',
@@ -134,9 +134,9 @@ export const authService = {
    * @param {string} provider - 'google' | 'github' | 'custom'
    */
   async initiateOAuth2Flow(provider = 'custom') {
-    const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
-    const redirectUri = import.meta.env.VITE_OAUTH_REDIRECT_URI;
-    const authUrl = import.meta.env.VITE_OAUTH_AUTH_URL;
+    const clientId = window.ENV?.VITE_OAUTH_CLIENT_ID || import.meta.env.VITE_OAUTH_CLIENT_ID;
+    const redirectUri = window.ENV?.VITE_OAUTH_REDIRECT_URI || import.meta.env.VITE_OAUTH_REDIRECT_URI;
+    const authUrl = window.ENV?.VITE_OAUTH_AUTH_URL || import.meta.env.VITE_OAUTH_AUTH_URL;
 
     if (!clientId || !redirectUri || !authUrl) {
       console.error('OAuth2 environment variables not configured');

@@ -16,9 +16,57 @@ pipeline {
 
         // Registry credentials (for future use)
         REGISTRY_CREDENTIALS_ID = "docker-registry-credentials"
+
+        // Frontend build-time environment variables
+        // Any VITE_* variables defined here will be automatically injected into .env.production
+        // Example (uncomment to use):
+        // VITE_API_URL = "your-api-url"
+        // VITE_OAUTH_CLIENT_ID = "your-client-id"
     }
 
     stages {
+        stage('Configure Build Environment') {
+            steps {
+                container('buildkit') {
+                    script {
+                        echo "📝 Scanning Jenkins environment for VITE_* variables..."
+
+                        // Dynamically scan and apply all VITE_* environment variables
+                        sh '''
+                            # Function to set or update env var in .env.production
+                            set_env() {
+                                key=$1
+                                value=$2
+
+                                if grep -q "^${key}=" .env.production 2>/dev/null; then
+                                    # Override existing value
+                                    sed -i "s|^${key}=.*|${key}=${value}|" .env.production
+                                    echo "  ✓ Updated: ${key}"
+                                else
+                                    # Add new value
+                                    echo "${key}=${value}" >> .env.production
+                                    echo "  ✓ Added: ${key}"
+                                fi
+                            }
+
+                            # Scan environment for all VITE_* variables and apply them
+                            env | grep '^VITE_' | while IFS='=' read -r key value; do
+                                set_env "$key" "$value"
+                            done
+                        '''
+
+                        echo "✅ Build environment configured"
+
+                        // Show final .env.production
+                        sh '''
+                            echo "📋 Final .env.production:"
+                            grep "^VITE_" .env.production || echo "  (no VITE_* variables found)"
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Setup Registry Auth') {
             steps {
                 container('buildkit') {

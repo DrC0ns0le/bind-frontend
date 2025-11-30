@@ -8,7 +8,7 @@ import PaginationControls from "../components/PaginationControls";
 import { PageHeading, SectionLabel } from "../components/Typography";
 import _ from "lodash";
 
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = window.ENV?.VITE_API_URL || import.meta.env.VITE_API_URL;
 
 function Zone() {
   const params = useParams();

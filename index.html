@@ -33,6 +33,8 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Load runtime config if available (404 if not generated, that's ok) -->
+    <script src="/config.js" onerror="console.log('No runtime config, using build-time values')"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

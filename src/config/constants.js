@@ -5,7 +5,8 @@
 
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'https://bind.internal.leejacksonz.com/',
+  // Try runtime config first (window.ENV), fallback to build-time values
+  BASE_URL: window.ENV?.VITE_API_URL || import.meta.env.VITE_API_URL || 'https://bind.internal.leejacksonz.com/',
   TIMEOUT: 30000, // 30 seconds
   VERSION: 'v1',
 };
@@ -13,7 +14,8 @@ export const API_CONFIG = {
 // Auth Configuration
 export const AUTH_CONFIG = {
   // Set VITE_AUTH_BYPASS=true in .env.development to bypass auth in dev mode
-  BYPASS_AUTH: import.meta.env.VITE_AUTH_BYPASS === 'true',
+  // Try runtime config first, fallback to build-time values
+  BYPASS_AUTH: (window.ENV?.VITE_AUTH_BYPASS || import.meta.env.VITE_AUTH_BYPASS) === 'true',
   DEV_MODE: import.meta.env.DEV,
 };
 
