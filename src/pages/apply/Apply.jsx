@@ -54,7 +54,7 @@ function Apply() {
     if (data[2]) return 'Ready to deploy the new configuration.';
     if (loading[2]) return 'Committing changes, please wait...';
     if (loading[3]) return 'Applying changes, please wait...';
-    if (error[3] !== '') return 'Failed to apply changes.';
+    if (error[3]) return 'Failed to apply changes.';
     return 'All changes have been applied.';
   };
 
