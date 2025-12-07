@@ -31,14 +31,14 @@ export function LoginPage() {
   // If there's an error, show the login page with error info
   if (errorMessage) {
     return (
-      <div className="min-h-screen flex items-center justify-center dark:bg-dark-bg bg-gray-150">
-        <div className="max-w-md w-full p-8 bg-white dark:bg-dark-elevated rounded-lg shadow-gb2 dark:shadow-dark-gb2">
-          <h1 className="text-3xl font-bold text-center mb-8 dark:text-gray-300">
+      <div className="min-h-screen flex items-center justify-center surface">
+        <div className="max-w-md w-full p-8 surface-elevated rounded-lg shadow-card">
+          <h1 className="text-3xl font-bold text-center mb-8 text-primary">
             BIND DNS Manager
           </h1>
 
           <div className="mb-6">
-            <div className="mb-4 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg">
+            <div className="mb-4 p-4 bg-danger-subtle text-danger rounded-lg">
               <p className="font-semibold mb-1">Authentication Failed</p>
               <p className="text-sm">{decodeURIComponent(errorMessage)}</p>
             </div>
@@ -46,7 +46,7 @@ export function LoginPage() {
             <button
               onClick={handleRetryLogin}
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg shadow-gb2 hover:shadow-gba2 transition-all disabled:opacity-50"
+              className="w-full py-3 px-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg shadow-button transition-all disabled:opacity-50"
             >
               {isLoading ? 'Redirecting...' : 'Try Again'}
             </button>
@@ -58,9 +58,9 @@ export function LoginPage() {
 
   // Show loading while auto-redirecting to OAuth
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center dark:bg-dark-bg bg-gray-150">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-      <p className="text-gray-600 dark:text-gray-400">Redirecting to login...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center surface">
+      <div className="spinner mb-4"></div>
+      <p className="text-secondary">Redirecting to login...</p>
     </div>
   );
 }

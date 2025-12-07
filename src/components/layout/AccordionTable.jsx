@@ -140,7 +140,7 @@ export function Accordion({
         aria-disabled={disableExpand}
         tabIndex={disableExpand ? -1 : 0}
         className={cn(
-          "flex flex-row w-full text-left cursor-pointer border-t border-gray-200 dark:border-dark-border dark:text-gray-300 transition-smooth",
+          "flex flex-row w-full text-left cursor-pointer border-t border-subtle text-primary transition-smooth",
           disableExpand && "cursor-default",
           className
         )}
@@ -183,7 +183,7 @@ export function Accordion({
             maxHeight: isOpen ? `${contentHeight}px` : "0px",
           }}
         >
-          <div ref={contentRef} className={cn(isOpen && "bg-gray-50 dark:bg-[#151515]")}>
+          <div ref={contentRef} className={cn(isOpen && "surface-hover")}>
             {contentChild?.props.children}
           </div>
         </div>
@@ -214,7 +214,7 @@ AccordionContent.displayName = "AccordionContent";
 export function TableHeader({ children, className = "", showChevronSpace = false }) {
   return (
     <div className={cn(
-      "flex flex-row items-center rounded-t-lg border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-header",
+      "flex flex-row items-center rounded-t-lg border border-subtle surface-header",
       className
     )}>
       <div className="flex flex-col md:flex-row md:items-center py-3 px-4 w-full">
@@ -235,7 +235,7 @@ TableHeader.displayName = "TableHeader";
  */
 export function TableRow({ children, className = "" }) {
   return (
-    <div className={cn("flex flex-row items-center py-2 px-4 dark:text-gray-300", className)}>
+    <div className={cn("flex flex-row items-center py-2 px-4 text-primary", className)}>
       {children}
     </div>
   );
@@ -255,7 +255,7 @@ export function AccordionTable({ headers, rows, allowMultiple = true }) {
           </div>
         ))}
       </TableHeader>
-      <div className="border-x border-b border-gray-200 dark:border-dark-border rounded-b-lg overflow-hidden">
+      <div className="border-x border-b border-subtle rounded-b-lg overflow-hidden">
         {rows.map((record) => (
           <Accordion key={record.id || record.name} id={`accordion-${record.id || record.name}`}>
             <AccordionTitle>

@@ -46,8 +46,8 @@ function Zones() {
             {SpinningCog()}
           </div>
         ) : error ? (
-          <div className="dark:text-gray-300 text-center w-full">
-            <p className="text-red-600 dark:text-red-400 font-semibold mb-2">Error loading zones</p>
+          <div className="text-primary text-center w-full">
+            <p className="text-danger font-semibold mb-2">Error loading zones</p>
             <p className="text-sm">{getUserFriendlyError(error)}</p>
           </div>
         ) : (

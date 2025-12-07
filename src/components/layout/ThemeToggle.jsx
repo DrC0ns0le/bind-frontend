@@ -35,16 +35,60 @@ const MoonIcon = () => (
   </svg>
 );
 
+const SystemIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25"
+    />
+  </svg>
+);
+
 export const ThemeToggle = ({ className = '' }) => {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { themeMode, toggleTheme } = useTheme();
+
+  const getIcon = () => {
+    switch (themeMode) {
+      case 'light':
+        return <SunIcon />;
+      case 'dark':
+        return <MoonIcon />;
+      case 'system':
+        return <SystemIcon />;
+      default:
+        return <SystemIcon />;
+    }
+  };
+
+  const getLabel = () => {
+    switch (themeMode) {
+      case 'light':
+        return 'Switch to dark mode';
+      case 'dark':
+        return 'Switch to system mode';
+      case 'system':
+        return 'Switch to light mode';
+      default:
+        return 'Toggle theme';
+    }
+  };
 
   return (
     <button
       onClick={toggleTheme}
-      className={`transition-smooth text-gray-900 dark:text-gray-300 hover-scale ${className}`}
-      aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+      className={`transition-smooth text-primary hover-scale ${className}`}
+      aria-label={getLabel()}
+      title={`Current: ${themeMode}`}
     >
-      {isDarkMode ? <SunIcon /> : <MoonIcon />}
+      {getIcon()}
     </button>
   );
 };

@@ -1,54 +1,77 @@
 import React from "react";
 
-// Original BigButton1 component
+/**
+ * TWO MAJOR BUTTON STYLES:
+ * 1. Dark Background (btn-dark) - For primary/accent actions
+ * 2. Light Background (btn-light) - For secondary/surface actions
+ */
+
+// ========================================
+// STYLE 1: DARK BACKGROUND BUTTONS
+// ========================================
+
+// Primary action button - dark background with white text
+export function PrimaryButton({ children, className = "", ...props }) {
+  return (
+    <button
+      className={`btn-base btn-dark shadow-button hover-scale ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Icon button variant with dark background
+export function IconButton({ children, className = "", ...props }) {
+  return (
+    <button
+      className={`btn-base shadow-button hover-scale p-2 ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ========================================
+// STYLE 2: LIGHT BACKGROUND BUTTONS
+// ========================================
+
+// Large navigation button - light background with elevated surface
 function BigButton1(props) {
-  const { option, value, onClick } = props;
+  const { option, value, description, onClick, alignLeft = false } = props;
 
   const onClickHandler = () => {
     onClick(option);
   };
 
+  const alignmentClasses = alignLeft
+    ? "items-start text-left"
+    : "items-center text-center";
+
   return (
     <button
-      className="font-medium py-2 md:px-4 rounded-[8px] transition-smooth md:mr-5 mb-5 hover-scale shadow-gb1 dark:shadow-dark-gb1 hover:shadow-gba1 dark:hover:shadow-dark-gba1 dark:bg-dark-elevated w-[350px] h-[100px] text-xl dark:text-gray-300"
+      className={`btn-base shadow-button hover-scale surface-elevated font-medium text-primary md:px-4 md:mr-5 mb-5 w-[350px] h-[100px] flex flex-col justify-center ${alignmentClasses}`}
       onClick={() => {
         onClickHandler();
       }}
     >
-      {value}
+      <div className="text-xl">{value}</div>
+      {description && (
+        <div className="text-sm font-normal text-secondary mt-1">
+          {description}
+        </div>
+      )}
     </button>
   );
 }
 
-// Primary Button - Dark button with shadows (most commonly used)
-export function PrimaryButton({ children, className = "", ...props }) {
-  return (
-    <button
-      className={`rounded-md bg-primary dark:bg-dark-elevated px-4 py-2 text-sm font-semibold text-white shadow-gb1 dark:shadow-dark-gb1 hover:shadow-gba1 dark:hover:shadow-dark-gba1 hover:bg-primary-hover dark:hover:bg-dark-hover transition-smooth hover-scale ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
-// Danger Button - Red outline button with fill on hover
+// Danger/destructive action button - red outline with light background
 export function DangerButton({ children, className = "", ...props }) {
   return (
     <button
-      className={`rounded-md self-center outline outline-[1px] outline-danger px-2.5 py-1.5 text-sm text-danger shadow-gb1 dark:shadow-dark-gb1 hover:shadow-gba1 dark:hover:shadow-dark-gba1 hover:text-white hover:bg-danger transition-smooth hover-scale w-[86px] h-[32px] text-center cursor-pointer ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
-// Icon Button - For buttons with icons
-export function IconButton({ children, className = "", ...props }) {
-  return (
-    <button
-      className={`rounded-md p-2 hover:bg-gray-100 dark:hover:bg-dark-hover shadow-gb1 dark:shadow-dark-gb1 hover:shadow-gba1 dark:hover:shadow-dark-gba1 transition-smooth hover-scale ${className}`}
+      className={`btn-base btn-light shadow-button hover-scale outline outline-[1px] outline-danger text-danger hover:text-white hover:bg-danger self-center w-[86px] h-[32px] flex items-center justify-center text-center ${className}`}
       {...props}
     >
       {children}

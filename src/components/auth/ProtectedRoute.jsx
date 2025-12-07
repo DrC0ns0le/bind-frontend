@@ -15,9 +15,9 @@ import { AUTH_CONFIG } from '../../config/constants';
  */
 function LoadingSpinner({ message = 'Loading...' }) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen dark:bg-dark-bg bg-gray-150">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-      <p className="text-gray-600 dark:text-gray-400">{message}</p>
+    <div className="flex flex-col items-center justify-center h-screen surface">
+      <div className="spinner mb-4"></div>
+      <p className="text-secondary">{message}</p>
     </div>
   );
 }
@@ -27,16 +27,9 @@ export function ProtectedRoute({ children }) {
   const location = useLocation();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  // Dev mode bypass - show warning banner
+  // Dev mode bypass - just return children
   if (AUTH_CONFIG.BYPASS_AUTH && AUTH_CONFIG.DEV_MODE) {
-    return (
-      <>
-        <div className="bg-yellow-500 text-black text-center py-2 font-semibold text-sm">
-          ⚠️ DEV MODE: Authentication bypassed (VITE_AUTH_BYPASS=true)
-        </div>
-        {children}
-      </>
-    );
+    return children;
   }
 
   // Auto-login effect: if not authenticated and not loading, start OAuth flow

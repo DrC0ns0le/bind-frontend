@@ -28,12 +28,13 @@ export const RecordForm = React.memo(function RecordForm({
 
   return (
     <form onSubmit={onSubmit} className="px-3">
-      <div className="flex flex-col md:flex-row p-2 place-content-between">
+      {/* First row: Type, Host, TTL */}
+      <div className="flex flex-col md:flex-row p-2 gap-4">
         {/* Type select */}
-        <div className="flex flex-col w-[30%] md:w-[10%]">
+        <div className="flex flex-col w-full md:w-[15%]">
           <label
             htmlFor={`${record.uuid}type`}
-            className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
+            className="p-1 text-sm pt-4 md:pt-1 text-secondary"
           >
             Type:
           </label>
@@ -47,10 +48,10 @@ export const RecordForm = React.memo(function RecordForm({
         </div>
 
         {/* Host input */}
-        <div className="flex flex-col md:w-[30%]">
+        <div className="flex flex-col flex-1">
           <label
             htmlFor={`${record.uuid}host`}
-            className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
+            className="p-1 text-sm pt-4 md:pt-1 text-secondary"
           >
             Hostname:
           </label>
@@ -63,29 +64,11 @@ export const RecordForm = React.memo(function RecordForm({
           />
         </div>
 
-        {/* Content textarea */}
-        <div className="flex flex-col md:w-[45%]">
-          <label
-            htmlFor={`${record.uuid}content`}
-            className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
-          >
-            Content:
-          </label>
-          <TextArea
-            name={`${record.uuid}content`}
-            id={`${record.uuid}content`}
-            defaultValue={record.content}
-            placeholder="89.0.142.86"
-            required
-            className="w-full h-[128px] touch:h-[128px] md:h-[36px] min-h-9 resize-y"
-          />
-        </div>
-
         {/* TTL input */}
-        <div className="flex flex-col w-[40%] md:w-[10%]">
+        <div className="flex flex-col w-full md:w-[15%]">
           <label
             htmlFor={`${record.uuid}ttl`}
-            className="p-1 text-sm pt-4 md:pt-1 dark:text-gray-400"
+            className="p-1 text-sm pt-4 md:pt-1 text-secondary"
           >
             TTL:
           </label>
@@ -102,6 +85,24 @@ export const RecordForm = React.memo(function RecordForm({
         </div>
       </div>
 
+      {/* Second row: Content */}
+      <div className="flex flex-col p-2">
+        <label
+          htmlFor={`${record.uuid}content`}
+          className="p-1 text-sm text-secondary"
+        >
+          Content:
+        </label>
+        <TextArea
+          name={`${record.uuid}content`}
+          id={`${record.uuid}content`}
+          defaultValue={record.content}
+          placeholder="89.0.142.86"
+          required
+          className="w-full h-[128px] md:h-auto min-h-9 resize-y"
+        />
+      </div>
+
       {/* PTR checkbox for A/AAAA records */}
       {(selectedType === 'A' || selectedType === 'AAAA') && (
         <div className="flex flex-row items-center pl-2">
@@ -110,11 +111,11 @@ export const RecordForm = React.memo(function RecordForm({
             name={`${record.uuid}add_ptr`}
             id={`${record.uuid}add_ptr`}
             defaultChecked={record.add_ptr}
-            className="w-4 h-4 checked:bg-gray-800 dark:checked:bg-gray-600 border-gray-900 dark:border-gray-600 dark:bg-dark-elevated"
+            className="checkbox-base"
           />
           <label
             htmlFor={`${record.uuid}add_ptr`}
-            className="p-1 text-sm dark:text-gray-400"
+            className="p-1 text-sm text-secondary"
           >
             Add Reverse DNS (PTR)
           </label>
@@ -126,7 +127,7 @@ export const RecordForm = React.memo(function RecordForm({
         <DangerButton type="button" onClick={onDelete}>
           Delete
         </DangerButton>
-        <p className="pl-2 md:pb-1 self-end text-gray-500 dark:text-gray-500 text-[12px] border-none grow">
+        <p className="pl-2 md:pb-1 self-end text-tertiary text-[12px] border-none grow">
           {record.uuid !== 'new' ? `UUID: ${record.uuid}` : ''}
         </p>
         <PrimaryButton type="submit" className="place-self-end">

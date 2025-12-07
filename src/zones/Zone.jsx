@@ -145,7 +145,7 @@ function Zone() {
   if (error[0]) {
     return (
       <Frame location="zones" breadcrumbs={[{ label: "zones", path: "/zones" }]}>
-        <div className="flex items-center justify-center h-screen dark:text-gray-300">
+        <div className="flex items-center justify-center h-screen text-primary">
           <p>Error: {error[0].message}</p>
           <p>---</p>
           <p>{error[0].response.data.message}</p>
@@ -157,7 +157,7 @@ function Zone() {
   return (
     <Frame location="zones" breadcrumbs={breadcrumbs}>
       <div>
-        <p className="text-2xl font-black tracking-tight dark:text-gray-300 transition-smooth">ZONE</p>
+        <p className="text-2xl font-black tracking-tight text-primary transition-smooth">ZONE</p>
         <PageHeading className="text-[80px] pb-4 text-wrap overflow-scroll">
           {data[0]?.name}
         </PageHeading>
@@ -168,7 +168,7 @@ function Zone() {
         {loading[1] ? (
           <div className="flex justify-center">{SpinningCog()}</div>
         ) : error[1] ? (
-          <div className="flex flex-col items-center justify-center pt-8 dark:text-gray-300">
+          <div className="flex flex-col items-center justify-center pt-8 text-primary">
             <p>Error: Failed to fetch records</p>
             <p className="p-2">---</p>
             <p>

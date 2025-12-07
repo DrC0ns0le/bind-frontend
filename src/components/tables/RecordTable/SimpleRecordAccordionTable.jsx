@@ -26,7 +26,7 @@ export const SimpleRecordAccordionTable = React.memo(function SimpleRecordAccord
           {Object.entries(headers).map(([header, className]) => (
             <div
               key={header}
-              className={`${className} font-semibold font-mono tracking-tight text-md dark:text-gray-300`}
+              className={`${className} font-semibold font-mono tracking-tight text-md text-primary`}
             >
               {header}
             </div>
@@ -75,22 +75,22 @@ export const SimpleRecordAccordionTable = React.memo(function SimpleRecordAccord
               <div className="px-3 py-2">
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
-                    <span className="font-semibold dark:text-gray-400">Type:</span>
-                    <span className="ml-2 dark:text-gray-300">{record.type}</span>
+                    <span className="font-semibold text-secondary">Type:</span>
+                    <span className="ml-2 text-primary">{record.type}</span>
                   </div>
                   <div>
-                    <span className="font-semibold dark:text-gray-400">TTL:</span>
-                    <span className="ml-2 dark:text-gray-300">{record.ttl}</span>
+                    <span className="font-semibold text-secondary">TTL:</span>
+                    <span className="ml-2 text-primary">{record.ttl}</span>
                   </div>
                   <div className="col-span-2">
-                    <span className="font-semibold dark:text-gray-400">Host:</span>
-                    <span className="ml-2 dark:text-gray-300">{record.host}</span>
+                    <span className="font-semibold text-secondary">Host:</span>
+                    <span className="ml-2 text-primary">{record.host}</span>
                   </div>
                   <div className="col-span-2">
-                    <span className="font-semibold dark:text-gray-400">Content:</span>
-                    <span className="ml-2 dark:text-gray-300 break-all">{record.content}</span>
+                    <span className="font-semibold text-secondary">Content:</span>
+                    <span className="ml-2 text-primary break-all">{record.content}</span>
                   </div>
-                  <div className="col-span-2 text-xs text-gray-500 dark:text-gray-500">
+                  <div className="col-span-2 text-xs text-tertiary">
                     UUID: {record.uuid}
                   </div>
                 </div>

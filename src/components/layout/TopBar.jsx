@@ -6,7 +6,7 @@ function TopBar(props) {
   const options = [
     { text: "home", path: "/" },
     { text: "zones", path: "/zones" },
-    { text: "global", path: "/global" },
+    { text: "configuration", path: "/configuration" },
     { text: "apply", path: "/apply" },
   ];
 
@@ -17,7 +17,7 @@ function TopBar(props) {
         {options.map((item) => (
           <li key={item.text}>
             <a
-              className={`hover:drop-shadow-4xl transition-smooth drop-shadow-ps1 dark:drop-shadow-dark-ps1 uppercase active:scale-95 dark:text-gray-300 ${
+              className={`text-shadow-nav uppercase active:scale-95 text-primary ${
                 location === item.text ? "font-bold" : ""
               }`}
               key={item.text}

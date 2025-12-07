@@ -1,13 +1,526 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Dark mode variant - matches .dark class on html/body or any parent */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Font families */
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-serif: "IBM Plex Serif", serif;
+
+  /* Primary brand colors */
+  --color-primary: #111827;
+  --color-primary-hover: #374151;
+
+  /* Secondary/tertiary text colors */
+  --color-secondary: #6b7280;
+  --color-tertiary: #9ca3af;
+
+  /* Button colors */
+  --color-button: #373737;
+  --color-button-hover: #343434;
+
+  --color-danger: #b92424;
+
+  /* Light mode colors */
+  --color-gray-150: #f5f5f5;
+
+  /* Border colors */
+  --color-border: #d1d5db;
+
+  /* Dark mode colors */
+  --color-dark-bg: #090909;        /* 95% dark - main background */
+  --color-dark-elevated: #151515;  /* Pure black - important elements (tables, cards) */
+  --color-dark-hover: #1a1a1a;     /* Very dark on hover */
+  --color-dark-border: #2d2d2d;    /* Subtle border for contrast */
+  --color-dark-header: #0a0a0a;    /* Very dark for headers */
+
+  /* Danger color variants */
+  --color-danger-light: #fef2f2;
+  --color-danger-dark: #3d1a1a;
+
+  /* Success color variants */
+  --color-success: #16a34a;
+  --color-success-light: #f0fdf4;
+  --color-success-dark: #1a3d1a;
+
+  /* Warning color variants */
+  --color-warning: #eab308;
+  --color-warning-light: #fefce8;
+  --color-warning-dark: #3d3d1a;
+
+  /* Modified/neutral status */
+  --color-modified: #6b7280;
+  --color-modified-light: #f9fafb;
+  --color-modified-dark: #2a2a2a;
+
+  /* Surface colors */
+  --color-surface: #ffffff;
+  --color-surface-hover: #f9fafb;
+  --color-surface-elevated: #ffffff;
+
+  /* Drop shadows - KEPT (used in navigation) */
+  --drop-shadow-4xl: 0 35px 35px rgba(0, 0, 0, 0.25), 0 45px 65px rgba(0, 0, 0, 0.15);
+  --drop-shadow-ps1: 0 0px 15px rgba(0, 0, 0, 0.2);
+  --drop-shadow-dark-ps1: 0 0 12px rgba(255, 255, 255, 0.08);
+  --drop-shadow-dark-4xl: 0 0 40px rgba(255, 255, 255, 0.1), 0 0 60px rgba(255, 255, 255, 0.06);
+
+  /* Box shadows - KEPT (used by utilities) */
+  --shadow-gb1: 0px 2px 10px rgba(0, 0, 0, 0.05);
+  --shadow-gba1: 3px 6px 20px rgba(0, 0, 0, 0.05);
+  --shadow-gb2: 0px 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-gba2: 3px 6px 10px rgba(0, 0, 0, 0.05);
+  --shadow-ga1: inset 0px 0px 10px rgba(255, 255, 255, 1), 0px 2px 10px rgba(0, 0, 0, 0.05);
+  --shadow-gah1: inset 1px 1px 4px rgba(255, 255, 255, 1), 3px 6px 20px rgba(0, 0, 0, 0.05);
+  --shadow-dark-gb1: inset 1px 1px 2px rgba(255, 255, 255, 0.02), 0px 0px 10px rgba(255, 255, 255, 0.03);
+  --shadow-dark-gb2: 0 0 8px rgba(255, 255, 255, 0.03);
+  --shadow-dark-gba1: inset 1px 1px 2px rgba(255, 255, 255, 0.03), 0px 0px 20px rgba(255, 255, 255, 0.06);
+  --shadow-dark-gba2: 0 0 15px rgba(255, 255, 255, 0.06);
+  --shadow-dark-gah1: 0 0 25px rgba(255, 255, 255, 0.08);
+}
+
+/* ========================================
+   DARK MODE COLOR OVERRIDES
+   ======================================== */
+
+@layer theme {
+  .dark {
+    --color-primary: #f9fafb;
+    --color-primary-hover: #e5e7eb;
+    --color-secondary: #d1d5db;
+    --color-tertiary: #9ca3af;
+    --color-border: #2d2d2d;
+    --color-surface: #0d0d0d;
+    --color-surface-hover: #1a1a1a;
+    --color-surface-elevated: #000000;
+  }
+}
+
+@utility border-subtle {
+  border-color: #e5e7eb;
+
+  @variant dark {
+    border-color: var(--color-dark-border);
+  }
+}
+
+@utility ring-subtle {
+  --tw-ring-color: #d1d5db;
+
+  @variant dark {
+    --tw-ring-color: var(--color-dark-border);
+  }
+}
+
+/* ========================================
+   TRANSITION & ANIMATION UTILITIES
+   ======================================== */
+
+@utility transition-smooth {
+  transition: all 300ms ease-in-out;
+}
+
+@utility active-scale {
+  transition: transform 200ms ease-in-out;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+@utility hover-scale {
+  transition: transform 200ms ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+@utility spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 9999px;
+  height: 3rem;
+  width: 3rem;
+  border-bottom-width: 2px;
+  border-color: var(--color-primary);
+}
+
+/* ========================================
+   SHADOW UTILITIES - Semantic Element-Based
+   ======================================== */
+
+@utility shadow-button {
+  box-shadow: var(--shadow-gb1);
+
+  &:hover {
+    box-shadow: var(--shadow-gba1);
+  }
+
+  @variant dark {
+    box-shadow: var(--shadow-dark-gb1);
+
+    &:hover {
+      box-shadow: var(--shadow-dark-gba1);
+    }
+  }
+}
+
+@utility btn-dark-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  @variant dark {
+    background-color: transparent;
+    color: var(--color-primary);
+
+    &:hover {
+      background-color: var(--color-dark-hover);
+    }
+  }
+}
+
+@utility shadow-input {
+  box-shadow: var(--shadow-gb2);
+
+  &:hover {
+    box-shadow: var(--shadow-gba2);
+  }
+
+  @variant dark {
+    box-shadow: var(--shadow-dark-gb2);
+
+    &:hover {
+      box-shadow: var(--shadow-dark-gba2);
+    }
+  }
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-gb1);
+
+  &:hover {
+    box-shadow: var(--shadow-gba1);
+  }
+
+  @variant dark {
+    box-shadow: var(--shadow-dark-gb1);
+
+    &:hover {
+      box-shadow: var(--shadow-dark-gba1);
+    }
+  }
+}
+
+@utility shadow-alert {
+  box-shadow: var(--shadow-ga1);
+
+  &:hover {
+    box-shadow: var(--shadow-gah1);
+  }
+
+  @variant dark {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+
+    &:hover {
+      box-shadow: var(--shadow-dark-gah1);
+    }
+  }
+}
+
+/* ========================================
+   TEXT DROP SHADOWS - Navigation/Headers
+   ======================================== */
+
+@utility text-shadow-nav {
+  filter: drop-shadow(var(--drop-shadow-ps1));
+
+  &:hover {
+    filter: drop-shadow(var(--drop-shadow-4xl));
+  }
+
+  @variant dark {
+    filter: drop-shadow(var(--drop-shadow-dark-ps1));
+
+    &:hover {
+      filter: drop-shadow(var(--drop-shadow-dark-4xl));
+    }
+  }
+}
+
+/* ========================================
+   TEXT COLOR UTILITIES
+   ======================================== */
+
+/* Tailwind auto-generates text-primary, text-secondary, text-tertiary
+   from --color-primary, --color-secondary, --color-tertiary */
+
+/* ========================================
+   STATUS COLOR UTILITIES
+   ======================================== */
+
+@utility text-danger {
+  color: var(--color-danger);
+}
+
+@utility text-success {
+  color: var(--color-success);
+}
+
+@utility text-warning {
+  color: var(--color-warning);
+}
+
+@utility bg-danger-subtle {
+  background-color: var(--color-danger-light);
+
+  @variant dark {
+    background-color: var(--color-danger-dark);
+  }
+}
+
+@utility bg-success-subtle {
+  background-color: var(--color-success-light);
+
+  @variant dark {
+    background-color: var(--color-success-dark);
+  }
+}
+
+@utility bg-warning-subtle {
+  background-color: var(--color-warning-light);
+
+  @variant dark {
+    background-color: var(--color-warning-dark);
+  }
+}
+
+@utility bg-modified-subtle {
+  background-color: var(--color-modified-light);
+
+  @variant dark {
+    background-color: var(--color-modified-dark);
+  }
+}
+
+@utility text-status-created {
+  color: #16a34a;
+
+  @variant dark {
+    color: #4ade80;
+  }
+}
+
+@utility text-status-updated {
+  color: #2563eb;
+
+  @variant dark {
+    color: #60a5fa;
+  }
+}
+
+@utility text-status-skipped {
+  color: #ca8a04;
+
+  @variant dark {
+    color: #facc15;
+  }
+}
+
+@utility text-status-deleted {
+  color: #dc2626;
+
+  @variant dark {
+    color: #f87171;
+  }
+}
+
+/* ========================================
+   SURFACE/BACKGROUND UTILITIES
+   ======================================== */
+
+@utility surface {
+  background-color: var(--color-surface);
+
+  @variant dark {
+    background-color: var(--color-dark-bg);
+  }
+}
+
+@utility surface-hover {
+  background-color: var(--color-surface-hover);
+
+  @variant dark {
+    background-color: var(--color-dark-hover);
+  }
+}
+
+@utility surface-elevated {
+  background-color: var(--color-surface-elevated);
+
+  @variant dark {
+    background-color: var(--color-dark-elevated);
+  }
+}
+
+@utility surface-header {
+  background-color: #f9fafb;
+
+  @variant dark {
+    background-color: var(--color-dark-header);
+  }
+}
+
+/* ========================================
+   COMMON PATTERN UTILITIES
+   ======================================== */
+
+@utility input-base {
+  font-family: var(--font-mono);
+  display: block;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: all 300ms ease-in-out;
+  outline: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+
+  &:hover {
+    border-color: #9ca3af;
+    box-shadow: 3px 6px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  &:focus {
+    border-color: #1f2937;
+    border-width: 2px;
+    padding: calc(0.375rem - 1px) calc(0.5rem - 1px);
+    box-shadow: 3px 6px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
+
+  @variant dark {
+    background-color: var(--color-dark-elevated);
+    color: var(--color-dark-text-primary);
+    border-color: var(--color-dark-border);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.03);
+
+    &::placeholder {
+      color: var(--color-dark-text-tertiary);
+    }
+
+    &:hover {
+      border-color: #6b7280;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.06);
+    }
+
+    &:focus {
+      border-color: #9ca3af;
+      border-width: 2px;
+      padding: calc(0.375rem - 1px) calc(0.5rem - 1px);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.06);
+    }
+  }
+}
+
+@utility btn-base {
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Button Style 1: Dark Background (Primary actions) */
+@utility btn-dark {
+  background-color: var(--color-button);
+  color: white;
+
+  &:hover {
+    background-color: var(--color-button-hover);
+  }
+
+  @variant dark {
+    background-color: var(--color-dark-elevated);
+    color: #f9fafb;
+
+    &:hover {
+      background-color: var(--color-dark-hover);
+    }
+  }
+}
+
+/* Button Style 2: Light Background (Secondary actions) */
+@utility btn-light {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  @variant dark {
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-text-primary);
+
+    &:hover {
+      background-color: var(--color-dark-hover);
+    }
+  }
+}
+
+@utility card {
+  border-radius: 0.5rem;
+  padding: 2rem;
+  background-color: var(--color-surface);
+  transition: all 300ms ease-in-out;
+
+  @variant dark {
+    background-color: var(--color-dark-elevated);
+  }
+}
+
+@utility checkbox-base {
+  width: 1rem;
+  height: 1rem;
+  border-color: #111827;
+
+  &:checked {
+    background-color: #1f2937;
+  }
+
+  @variant dark {
+    background-color: var(--color-dark-elevated);
+    border-color: #4b5563;
+
+    &:checked {
+      background-color: #4b5563;
+    }
+  }
+}
 
 /* Dark mode number input spinner styling */
-@layer base {
-  .dark input[type="number"]::-webkit-inner-spin-button,
-  .dark input[type="number"]::-webkit-outer-spin-button {
-    filter: invert(1);
-  }
+.dark input[type="number"]::-webkit-inner-spin-button,
+.dark input[type="number"]::-webkit-outer-spin-button {
+  filter: invert(1);
 }

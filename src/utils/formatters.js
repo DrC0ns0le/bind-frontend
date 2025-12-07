@@ -40,16 +40,16 @@ export function getRecordStatusClassName(record) {
 
   // Record is staged for deletion
   if (record.deleted_at !== 0) {
-    return 'bg-red-200 dark:bg-[#3d1a1a]';
+    return 'bg-danger-subtle';
   }
 
   // Record is newly created (not modified)
   if (record.created_at === record.modified_at) {
-    return 'bg-green-200 dark:bg-[#1a3d1a]';
+    return 'bg-success-subtle';
   }
 
   // Record is modified
-  return 'bg-gray-200 dark:bg-[#2a2a2a]';
+  return 'bg-modified-subtle';
 }
 
 /**

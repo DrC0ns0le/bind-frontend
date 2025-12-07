@@ -4,7 +4,7 @@ import React from "react";
 export function PageHeading({ children, className = "", ...props }) {
   return (
     <h1
-      className={`text-6xl sm:text-8xl font-black tracking-tight dark:text-gray-200 transition-smooth ${className}`}
+      className={`text-6xl md:text-8xl font-black tracking-tight leading-tight text-primary transition-smooth overflow-x-auto ${className}`}
       {...props}
     >
       {children}
@@ -16,7 +16,7 @@ export function PageHeading({ children, className = "", ...props }) {
 export function Subheading({ children, className = "", ...props }) {
   return (
     <h2
-      className={`text-2xl mt-4 dark:text-gray-300 transition-smooth ${className}`}
+      className={`text-2xl leading-normal mt-4 text-primary transition-smooth ${className}`}
       {...props}
     >
       {children}
@@ -28,7 +28,7 @@ export function Subheading({ children, className = "", ...props }) {
 export function SectionLabel({ children, className = "", ...props }) {
   return (
     <h3
-      className={`font-mono text-xl font-black p-2 pl-2 text-primary dark:text-gray-400 tracking-tight transition-smooth ${className}`}
+      className={`font-mono text-xl font-black leading-normal p-2 pl-1 text-secondary tracking-tight transition-smooth ${className}`}
       {...props}
     >
       {children}

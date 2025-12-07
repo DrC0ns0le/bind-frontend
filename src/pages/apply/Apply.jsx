@@ -8,6 +8,7 @@ import { SimpleRecordAccordionTable } from '../../components/tables/RecordTable'
 import Editor, { DiffEditor } from '@monaco-editor/react';
 import { SpinningCog, PrimaryButton, PageHeading, Subheading, SectionLabel } from '../../components/ui';
 import { useApplyWorkflow } from './useApplyWorkflow';
+import { useTheme } from '../../contexts/ThemeContext';
 
 function Apply() {
   const {
@@ -20,6 +21,8 @@ function Apply() {
     refresh,
     setRefresh,
   } = useApplyWorkflow();
+
+  const { isDarkMode } = useTheme();
 
   // Loading state
   if (loading[0]) {
@@ -100,7 +103,7 @@ function Apply() {
                     {file[0]}
                   </p>
                   <DiffEditor
-                    theme="vs-light"
+                    theme={isDarkMode ? "vs-dark" : "vs-light"}
                     height="400px"
                     language="json"
                     original={data[1].before[file[0]]}
@@ -144,7 +147,7 @@ function Apply() {
           <>
             <SectionLabel>Deployment Outcome:</SectionLabel>
             <Editor
-              theme="vs-light"
+              theme={isDarkMode ? "vs-dark" : "vs-light"}
               height="400px"
               language="json"
               value={data[3]}

@@ -41,6 +41,17 @@ export const API_ENDPOINTS = {
   AUTH_REFRESH: 'api/v1/auth/refresh',
   AUTH_CALLBACK: 'api/v1/auth/callback',
   AUTH_ME: 'api/v1/auth/me',
+
+  // Export endpoints
+  EXPORT_ALL: 'api/v1/export',
+  EXPORT_ZONES: 'api/v1/export/zones',
+  EXPORT_CONFIGS: 'api/v1/export/configs',
+
+  // Import endpoints
+  IMPORT_ALL: 'api/v1/import',
+  IMPORT_ZONES: 'api/v1/import/zones',
+  IMPORT_ZONE: 'api/v1/import/zone',
+  IMPORT_CONFIGS: 'api/v1/import/configs',
 };
 
 // DNS Record Types (fallback if API fails)
